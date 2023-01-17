@@ -11,6 +11,8 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <iostream>
+#include <fstream>
 
 // Header file for the classes stored in the TTree if any.
 
@@ -34,38 +36,38 @@ public :
 
    // Declaration of leaf types
    Int_t           m_trkmult;
-   Float_t         m_tr_p[637];   //[m_trkmult]
-   Float_t         m_tr_pt[637];   //[m_trkmult]
-   Float_t         m_tr_eta[637];   //[m_trkmult]
-   Float_t         m_tr_phi[637];   //[m_trkmult]
-   Int_t           m_tr_charge[637];   //[m_trkmult]
-   Float_t         m_tr_chisq[637];   //[m_trkmult]
-   Int_t           m_tr_ndf[637];   //[m_trkmult]
-   Float_t         m_tr_dca_xy[637];   //[m_trkmult]
-   Float_t         m_tr_dca_xy_error[637];   //[m_trkmult]
-   Float_t         m_tr_dca_z[637];   //[m_trkmult]
-   Float_t         m_tr_dca_z_error[637];   //[m_trkmult]
-   Float_t         m_tr_x[637];   //[m_trkmult]
-   Float_t         m_tr_y[637];   //[m_trkmult]
-   Float_t         m_tr_z[637];   //[m_trkmult]
-   Int_t           m_tr_vertex_id[637];   //[m_trkmult]
+   Float_t         m_tr_p[2000];   //[m_trkmult]
+   Float_t         m_tr_pt[2000];   //[m_trkmult]
+   Float_t         m_tr_eta[2000];   //[m_trkmult]
+   Float_t         m_tr_phi[2000];   //[m_trkmult]
+   Int_t           m_tr_charge[2000];   //[m_trkmult]
+   Float_t         m_tr_chisq[2000];   //[m_trkmult]
+   Int_t           m_tr_ndf[2000];   //[m_trkmult]
+   Float_t         m_tr_dca_xy[2000];   //[m_trkmult]
+   Float_t         m_tr_dca_xy_error[2000];   //[m_trkmult]
+   Float_t         m_tr_dca_z[2000];   //[m_trkmult]
+   Float_t         m_tr_dca_z_error[2000];   //[m_trkmult]
+   Float_t         m_tr_x[2000];   //[m_trkmult]
+   Float_t         m_tr_y[2000];   //[m_trkmult]
+   Float_t         m_tr_z[2000];   //[m_trkmult]
+   Int_t           m_tr_vertex_id[2000];   //[m_trkmult]
    Int_t           m_vtxmult;
-   Int_t           m_vertex_id[3];   //[m_vtxmult]
-   Float_t         m_vx[3];   //[m_vtxmult]
-   Float_t         m_vy[3];   //[m_vtxmult]
-   Float_t         m_vz[3];   //[m_vtxmult]
-   Float_t         m_tr_cemc_eta[637];   //[m_trkmult]
-   Float_t         m_tr_cemc_phi[637];   //[m_trkmult]
-   Float_t         m_tr_ihcal_eta[637];   //[m_trkmult]
-   Float_t         m_tr_ihcal_phi[637];   //[m_trkmult]
-   Float_t         m_tr_ohcal_eta[637];   //[m_trkmult]
-   Float_t         m_tr_ohcal_phi[637];   //[m_trkmult]
-   Int_t           m_tr_truth_pid[637];   //[m_trkmult]
-   Int_t           m_tr_truth_is_primary[637];   //[m_trkmult]
-   Float_t         m_tr_truth_e[637];   //[m_trkmult]
-   Float_t         m_tr_truth_pt[637];   //[m_trkmult]
-   Float_t         m_tr_truth_eta[637];   //[m_trkmult]
-   Float_t         m_tr_truth_phi[637];   //[m_trkmult]
+   Int_t           m_vertex_id[10];   //[m_vtxmult]
+   Float_t         m_vx[10];   //[m_vtxmult]
+   Float_t         m_vy[10];   //[m_vtxmult]
+   Float_t         m_vz[10];   //[m_vtxmult]
+   Float_t         m_tr_cemc_eta[2000];   //[m_trkmult]
+   Float_t         m_tr_cemc_phi[2000];   //[m_trkmult]
+   Float_t         m_tr_ihcal_eta[2000];   //[m_trkmult]
+   Float_t         m_tr_ihcal_phi[2000];   //[m_trkmult]
+   Float_t         m_tr_ohcal_eta[2000];   //[m_trkmult]
+   Float_t         m_tr_ohcal_phi[2000];   //[m_trkmult]
+   Int_t           m_tr_truth_pid[2000];   //[m_trkmult]
+   Int_t           m_tr_truth_is_primary[2000];   //[m_trkmult]
+   Float_t         m_tr_truth_e[2000];   //[m_trkmult]
+   Float_t         m_tr_truth_pt[2000];   //[m_trkmult]
+   Float_t         m_tr_truth_eta[2000];   //[m_trkmult]
+   Float_t         m_tr_truth_phi[2000];   //[m_trkmult]
 
    // List of branches
    TBranch        *b_m_trkmult;   //!
@@ -108,23 +110,23 @@ public :
 
    // Declaration of leaf types
    Int_t           m_clsmult_cemc;
-   Float_t         m_cl_cemc_e[2252];   //[m_clsmult_cemc]
-   Float_t         m_cl_cemc_eta[2252];   //[m_clsmult_cemc]
-   Float_t         m_cl_cemc_phi[2252];   //[m_clsmult_cemc]
-   Float_t         m_cl_cemc_r[2252];   //[m_clsmult_cemc]
-   Float_t         m_cl_cemc_z[2252];   //[m_clsmult_cemc]
+   Float_t         m_cl_cemc_e[5000];   //[m_clsmult_cemc]
+   Float_t         m_cl_cemc_eta[5000];   //[m_clsmult_cemc]
+   Float_t         m_cl_cemc_phi[5000];   //[m_clsmult_cemc]
+   Float_t         m_cl_cemc_r[5000];   //[m_clsmult_cemc]
+   Float_t         m_cl_cemc_z[5000];   //[m_clsmult_cemc]
    Int_t           m_clsmult_ihcal;
-   Float_t         m_cl_ihcal_e[190];   //[m_clsmult_ihcal]
-   Float_t         m_cl_ihcal_eta[190];   //[m_clsmult_ihcal]
-   Float_t         m_cl_ihcal_phi[190];   //[m_clsmult_ihcal]
-   Float_t         m_cl_ihcal_r[190];   //[m_clsmult_ihcal]
-   Float_t         m_cl_ihcal_z[190];   //[m_clsmult_ihcal]
+   Float_t         m_cl_ihcal_e[1000];   //[m_clsmult_ihcal]
+   Float_t         m_cl_ihcal_eta[1000];   //[m_clsmult_ihcal]
+   Float_t         m_cl_ihcal_phi[1000];   //[m_clsmult_ihcal]
+   Float_t         m_cl_ihcal_r[1000];   //[m_clsmult_ihcal]
+   Float_t         m_cl_ihcal_z[1000];   //[m_clsmult_ihcal]
    Int_t           m_clsmult_ohcal;
-   Float_t         m_cl_ohcal_e[208];   //[m_clsmult_ohcal]
-   Float_t         m_cl_ohcal_eta[208];   //[m_clsmult_ohcal]
-   Float_t         m_cl_ohcal_phi[208];   //[m_clsmult_ohcal]
-   Float_t         m_cl_ohcal_r[208];   //[m_clsmult_ohcal]
-   Float_t         m_cl_ohcal_z[208];   //[m_clsmult_ohcal]
+   Float_t         m_cl_ohcal_e[1000];   //[m_clsmult_ohcal]
+   Float_t         m_cl_ohcal_eta[1000];   //[m_clsmult_ohcal]
+   Float_t         m_cl_ohcal_phi[1000];   //[m_clsmult_ohcal]
+   Float_t         m_cl_ohcal_r[1000];   //[m_clsmult_ohcal]
+   Float_t         m_cl_ohcal_z[1000];   //[m_clsmult_ohcal]
 
    // List of branches
    TBranch        *b_m_clsmult_cemc;   //!
@@ -152,23 +154,23 @@ public :
 
    // Declaration of leaf types
    Int_t           m_twrmult_cemc;
-   Float_t         m_twr_cemc_e[9940];   //[m_twrmult_cemc]
-   Float_t         m_twr_cemc_eta[9940];   //[m_twrmult_cemc]
-   Float_t         m_twr_cemc_phi[9940];   //[m_twrmult_cemc]
-   Int_t           m_twr_cemc_ieta[9940];   //[m_twrmult_cemc]
-   Int_t           m_twr_cemc_iphi[9940];   //[m_twrmult_cemc]
+   Float_t         m_twr_cemc_e[25000];   //[m_twrmult_cemc]
+   Float_t         m_twr_cemc_eta[25000];   //[m_twrmult_cemc]
+   Float_t         m_twr_cemc_phi[25000];   //[m_twrmult_cemc]
+   Int_t           m_twr_cemc_ieta[25000];   //[m_twrmult_cemc]
+   Int_t           m_twr_cemc_iphi[25000];   //[m_twrmult_cemc]
    Int_t           m_twrmult_ihcal;
-   Float_t         m_twr_ihcal_e[1290];   //[m_twrmult_ihcal]
-   Float_t         m_twr_ihcal_eta[1290];   //[m_twrmult_ihcal]
-   Float_t         m_twr_ihcal_phi[1290];   //[m_twrmult_ihcal]
-   Int_t           m_twr_ihcal_ieta[1290];   //[m_twrmult_ihcal]
-   Int_t           m_twr_ihcal_iphi[1290];   //[m_twrmult_ihcal]
+   Float_t         m_twr_ihcal_e[2000];   //[m_twrmult_ihcal]
+   Float_t         m_twr_ihcal_eta[2000];   //[m_twrmult_ihcal]
+   Float_t         m_twr_ihcal_phi[2000];   //[m_twrmult_ihcal]
+   Int_t           m_twr_ihcal_ieta[2000];   //[m_twrmult_ihcal]
+   Int_t           m_twr_ihcal_iphi[2000];   //[m_twrmult_ihcal]
    Int_t           m_twrmult_ohcal;
-   Float_t         m_twr_ohcal_e[1287];   //[m_twrmult_ohcal]
-   Float_t         m_twr_ohcal_eta[1287];   //[m_twrmult_ohcal]
-   Float_t         m_twr_ohcal_phi[1287];   //[m_twrmult_ohcal]
-   Int_t           m_twr_ohcal_ieta[1287];   //[m_twrmult_ohcal]
-   Int_t           m_twr_ohcal_iphi[1287];   //[m_twrmult_ohcal]
+   Float_t         m_twr_ohcal_e[2000];   //[m_twrmult_ohcal]
+   Float_t         m_twr_ohcal_eta[2000];   //[m_twrmult_ohcal]
+   Float_t         m_twr_ohcal_phi[2000];   //[m_twrmult_ohcal]
+   Int_t           m_twr_ohcal_ieta[2000];   //[m_twrmult_ohcal]
+   Int_t           m_twr_ohcal_iphi[2000];   //[m_twrmult_ohcal]
 
    // List of branches
    TBranch        *b_m_twrmult_cemc;   //!
@@ -240,11 +242,11 @@ public :
 
    // Declaration of leaf types
    Int_t           m_hepmc;
-   Int_t           m_hepmc_pid[1];   //[m_hepmc]
-   Float_t         m_hepmc_e[1];   //[m_hepmc]
-   Float_t         m_hepmc_pt[1];   //[m_hepmc]
-   Float_t         m_hepmc_eta[1];   //[m_hepmc]
-   Float_t         m_hepmc_phi[1];   //[m_hepmc]
+   Int_t           m_hepmc_pid[20000];   //[m_hepmc]
+   Float_t         m_hepmc_e[20000];   //[m_hepmc]
+   Float_t         m_hepmc_pt[20000];   //[m_hepmc]
+   Float_t         m_hepmc_eta[20000];   //[m_hepmc]
+   Float_t         m_hepmc_phi[20000];   //[m_hepmc]
 
    // List of branches
    TBranch        *b_m_hepmc;   //!
@@ -300,6 +302,8 @@ public :
 
    bool basicEventSelection();
    bool basicTrackSelection(int id);
+
+   int Test(){ return 12; }
 };
 
 #endif
@@ -309,7 +313,7 @@ IsotrackTreesAnalysis::IsotrackTreesAnalysis()
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
-  std::ifstream infile("filelist.txt");
+  std::ifstream infile("../src/filelist.txt");
   TString filename;
 
   fChainTracks      = new TChain("tracktree");
