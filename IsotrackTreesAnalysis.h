@@ -296,8 +296,10 @@ public :
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
    void processEvent();
+   void processTrack(int id);
 
    bool basicEventSelection();
+   bool basicTrackSelection(int id);
 };
 
 #endif

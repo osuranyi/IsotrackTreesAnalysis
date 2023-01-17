@@ -1,8 +1,8 @@
 // Code for basic event selection
 
-bool IsotrackTreesAnalysis::basicEventSelection(){
-  bool trackSelection = (m_trkmult > 100);
-  bool caloSelection = (m_clsmult_cemc > 500);
+const float CENTRALITY_CUT = 20.0;
 
-  return trackSelection && caloSelection;
+bool IsotrackTreesAnalysis::basicEventSelection(){
+    // Centrality cut
+    return (centrality > CENTRALITY_CUT);
 }

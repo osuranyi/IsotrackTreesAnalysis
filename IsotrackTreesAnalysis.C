@@ -16,12 +16,15 @@ void IsotrackTreesAnalysis::Loop(){
 }
 
 void IsotrackTreesAnalysis::processEvent(){
-  
-  if(basicEventSelection()){
-    std::cout << "Selected" << std::endl;
-  }
-  else{
-    std::cout << "Not selected" << std::endl;
-  }
+    if(basicEventSelection()){
+        for(int i = 0; i < m_trkmult; i++){
+            if(basicTrackSelection(i)){
+                processTrack(i);
+            }
+        }
+    }
+}
 
+void IsotrackTreesAnalysis::processTrack(int id){
+    std::cout << "Isotrack found: " << m_tr_pt[id] << "\t" << m_tr_eta[id] << "\t" << m_tr_phi[id] << std::endl;
 }
