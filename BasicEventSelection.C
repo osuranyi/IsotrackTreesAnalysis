@@ -1,8 +1,8 @@
 // Code for basic event selection
 
-const float CENTRALITY_CUT = 20.0;
+#include "IsotrackTreesAnalysis.h"
 
-bool IsotrackTreesAnalysis::basicEventSelection(){
+bool IsotrackTreesAnalysis::basicEventSelection(float centralityCut){
     // Centrality cut
-    return (centrality > CENTRALITY_CUT);
+    return (centrality > centralityCut);
 }

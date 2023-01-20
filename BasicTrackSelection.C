@@ -1,24 +1,21 @@
 // Code for basic track selection
 
-const float D0_CUT = 0.15; // m
-const float Z0_CUT = 0.15; // m
-const float PT_CUT = 0.5;  // GeV
-const float MATCHED_PT_CUT = 0.2; // GeV
-const float MATCHED_DR_CUT = 0.4;
+#include <TVector3.h>
+#include "IsotrackTreesAnalysis.h"
 
-bool IsotrackTreesAnalysis::basicTrackSelection(int id){
+bool IsotrackTreesAnalysis::basicTrackSelection(int id, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut){
     
     // Primary vertex selection condition
     // d0 < 0.15, z0 < 0.15
     float d0 = sqrt((m_tr_x[id]-m_vx[0])*(m_tr_x[id]-m_vx[0])+(m_tr_y[id]-m_vy[0])*(m_tr_y[id]-m_vy[0]));
     float z0 = fabs(m_tr_z[id]-m_vz[0]);
 
-    if(!(d0 < D0_CUT && z0 < Z0_CUT)){
+    if(!(d0 < d0Cut && z0 < z0Cut)){
         return false;
     }
 
     // Track momentum cut
-    if(m_tr_pt[id] < PT_CUT){
+    if(m_tr_pt[id] < ptCut){
         return false;
     }
 
@@ -30,7 +27,7 @@ bool IsotrackTreesAnalysis::basicTrackSelection(int id){
 
         v2.SetPtEtaPhi(m_tr_pt[j], m_tr_eta[j], m_tr_phi[j]);
 
-        if(v2.Pt() > MATCHED_PT_CUT && v1.DeltaR(v2) < MATCHED_DR_CUT){
+        if(v2.Pt() > matchedPtCut && v1.DeltaR(v2) < matchedDrCut){
             return false;
         }
     }

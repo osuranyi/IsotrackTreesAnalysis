@@ -8,6 +8,7 @@
 #ifndef IsotrackTreesAnalysis_h
 #define IsotrackTreesAnalysis_h
 
+#include "ClusterContainer.h"
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
@@ -17,7 +18,7 @@
 // Header file for the classes stored in the TTree if any.
 
 class IsotrackTreesAnalysis {
-public :
+  public :
    TChain          *fChainTracks;   //!pointer to the analyzed TTree or TChain
    TChain          *fChainClusters;
    TChain          *fChainTowers;
@@ -288,6 +289,8 @@ public :
    TBranch        *b_centrality;   //!
 
 
+   enum caloType{cemc=0, ihcal=1, ohcal=2};
+
    IsotrackTreesAnalysis();
    virtual ~IsotrackTreesAnalysis();
    virtual Int_t    Cut(Long64_t entry);
@@ -297,13 +300,13 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+   
    void processEvent();
    void processTrack(int id);
+   bool basicEventSelection(float centralityCut);
+   bool basicTrackSelection(int id, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut);
 
-   bool basicEventSelection();
-   bool basicTrackSelection(int id);
-
-   int Test(){ return 12; }
+   MatchedClusterContainer getMatchedClusters(int id, caloType type, float dRThreshold);
 };
 
 #endif
