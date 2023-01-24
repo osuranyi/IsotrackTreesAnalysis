@@ -1,6 +1,6 @@
 CC = g++
 ROOTCONFIG = `root-config --libs --cflags`
-SOURCES = IsotrackTreesAnalysis.C BasicEventSelection.C BasicTrackSelection.C run.C
+SOURCES = IsotrackTreesAnalysis.C run.C
 EXECUTABLE = ../build/run_analysis
 
 all: $(EXECUTABLE)

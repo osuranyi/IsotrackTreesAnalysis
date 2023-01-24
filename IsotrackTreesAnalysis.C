@@ -7,15 +7,35 @@
 #include <TCanvas.h>
 #include <iostream>
 
+#include "BasicEventSelection.h"
+#include "BasicTrackSelection.h"
+#include "TrackResolutionModule.h"
+
+
 void IsotrackTreesAnalysis::Loop(){
     // Get the number of entries in the TChain
-    Long64_t nentries = fChainTracks->GetEntriesFast();
+    long nentries = fChainTracks->GetEntries();
+
+    ///////////////////////////////////////////////////
+    // Initializations go here
+
+    TFile* outputFile = new TFile("test_output.root", "RECREATE");
+
+    initTrackResolutionModule();
+
+    ///////////////////////////////////////////////////
 
     for(Long64_t jentry=0; jentry<nentries;jentry++) {
         LoadTree(jentry);
         GetEntry(jentry);
         processEvent();
+    
+        if(jentry % 1000 == 0)
+            std::cout << jentry << "/" << nentries << " have been processed" << std::endl;
     }
+
+    // Saving output file
+    outputFile->Write();
 }
 
 // Process an event
@@ -56,13 +76,14 @@ void IsotrackTreesAnalysis::processTrack(int id){
     // Analysis modules should be added here //
     ///////////////////////////////////////////
 
-    //trackResolutionModule(id, totalEnergy);
+    trackResolutionModule(id, totalEnergy);
 
-    std::cout << "Isotrack found: " << m_tr_pt[id] << "\t" << m_tr_eta[id] << "\t" << m_tr_phi[id] << std::endl;
+
+    /*std::cout << "Isotrack found: " << m_tr_pt[id] << "\t" << m_tr_eta[id] << "\t" << m_tr_phi[id] << std::endl;
     std::cout << "Matched clusters: " << std::endl;
 
     for(int i = 0; i < cemcClusters.getNumberOfClusters(); i++){
         std::cout << cemcClusters.eta[i] << "\t" << cemcClusters.phi[i] << std::endl;
-    }
+    }*/
 }
 

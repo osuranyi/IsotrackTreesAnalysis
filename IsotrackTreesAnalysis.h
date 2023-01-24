@@ -5,6 +5,7 @@
 // found on file: isotrack_output.root
 //////////////////////////////////////////////////////////
 
+#pragma once
 #ifndef IsotrackTreesAnalysis_h
 #define IsotrackTreesAnalysis_h
 
@@ -12,6 +13,8 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TH1F.h>
+#include <TH2F.h>
 #include <iostream>
 #include <fstream>
 
@@ -291,6 +294,13 @@ class IsotrackTreesAnalysis {
 
    enum caloType{cemc=0, ihcal=1, ohcal=2};
 
+   ////////////////
+   // Histograms //
+   ////////////////
+
+   TH2F* histEoverP_2D[5];
+
+
    IsotrackTreesAnalysis();
    virtual ~IsotrackTreesAnalysis();
    virtual Int_t    Cut(Long64_t entry);
@@ -307,6 +317,11 @@ class IsotrackTreesAnalysis {
    bool basicTrackSelection(int id, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut);
 
    MatchedClusterContainer getMatchedClusters(int id, caloType type, float dRThreshold);
+
+   // Modules
+   void initTrackResolutionModule();
+   void trackResolutionModule(int id, float totalEnergy);
+
 };
 
 #endif
