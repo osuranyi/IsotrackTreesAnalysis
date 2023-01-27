@@ -299,7 +299,10 @@ class IsotrackTreesAnalysis {
    ////////////////
 
    TH2F* histEoverP_2D[5];
-
+   TH2F* histEoverP[8];
+   TH2F* histEoverPBkg[8];
+   TH1F* histECemcBkg[8];
+   TH1F* histEIhcalBkg[8];
 
    IsotrackTreesAnalysis();
    virtual ~IsotrackTreesAnalysis();
@@ -315,12 +318,17 @@ class IsotrackTreesAnalysis {
    void processTrack(int id);
    bool basicEventSelection(float centralityCut);
    bool basicTrackSelection(int id, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut);
+   bool truthIsolatedTrackSelection(int id, float matchedPtCut, float matchedEtaCut, float matchedDrCut);
 
    MatchedClusterContainer getMatchedClusters(int id, caloType type, float dRThreshold);
+   MatchedClusterContainer getMatchedTowers(int id, caloType type, float dRThreshold);
 
    // Modules
    void initTrackResolutionModule();
    void trackResolutionModule(int id, float totalEnergy);
+   void initEOverPModule();
+   void eOverPModule(int id, float totalEnergy, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
+   void trackRatesModule();
 
 };
 
@@ -331,7 +339,7 @@ IsotrackTreesAnalysis::IsotrackTreesAnalysis()
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
-  std::ifstream infile("../src/filelist.txt");
+  std::ifstream infile("../data/truthtestfilelist.txt");
   TString filename;
 
   fChainTracks      = new TChain("tracktree");

@@ -56,3 +56,56 @@ MatchedClusterContainer IsotrackTreesAnalysis::getMatchedClusters(int id, caloTy
 
     return clusterContainer;
 }
+
+MatchedClusterContainer IsotrackTreesAnalysis::getMatchedTowers(int id, caloType type, float dRThreshold){
+    
+    MatchedClusterContainer clusterContainer;
+    TVector3 track, cluster;
+
+    switch(type){
+
+        case cemc:
+            // Check if EMCal is reached
+            for(int i = 0; i < m_twrmult_cemc; i++){ 
+                if(m_tr_cemc_eta[id] > -998){
+                    track.SetPtEtaPhi(1.0, m_tr_cemc_eta[id], m_tr_cemc_phi[id]); // for the track we only need the direction!
+                    cluster.SetPtEtaPhi(m_twr_cemc_e[i]/cosh(m_twr_cemc_eta[i]), m_twr_cemc_eta[i], m_twr_cemc_phi[i]);
+                    float dR = track.DeltaR(cluster);
+                    if(dR < dRThreshold){
+                        clusterContainer.addCluster(cluster, dR);
+                    }
+                }
+            }
+            break;
+
+        case ihcal:
+            // Check if IHCal is reached
+            for(int i = 0; i < m_twrmult_ihcal; i++){ 
+                if(m_tr_ihcal_eta[id] > -998){
+                    track.SetPtEtaPhi(1.0, m_tr_ihcal_eta[id], m_tr_ihcal_phi[id]); // for the track we only need the direction!
+                    cluster.SetPtEtaPhi(m_twr_ihcal_e[i]/cosh(m_twr_ihcal_eta[i]), m_twr_ihcal_eta[i], m_twr_ihcal_phi[i]);
+                    float dR = track.DeltaR(cluster);
+                    if(dR < dRThreshold){
+                        clusterContainer.addCluster(cluster, dR);
+                    }
+                }
+            }
+            break;
+
+        case ohcal:
+            // Check if OHCal is reached
+            for(int i = 0; i < m_twrmult_ihcal; i++){
+                if(m_tr_ohcal_eta[id] > -998){
+                    track.SetPtEtaPhi(1.0, m_tr_ohcal_eta[id], m_tr_ohcal_phi[id]); // for the track we only need the direction!
+                    cluster.SetPtEtaPhi(m_twr_ohcal_e[i]/cosh(m_twr_ohcal_eta[i]), m_twr_ohcal_eta[i], m_twr_ohcal_phi[i]);
+                    float dR = track.DeltaR(cluster);
+                    if(dR < dRThreshold){
+                        clusterContainer.addCluster(cluster, dR);
+                    }
+                }
+            }
+            break;
+    }
+
+    return clusterContainer;
+}
