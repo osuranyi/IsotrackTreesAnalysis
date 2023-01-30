@@ -7,16 +7,13 @@
 #include <TCanvas.h>
 #include <iostream>
 
-#include "BasicEventSelection.h"
-#include "BasicTrackSelection.h"
-#include "TruthIsolatedTrackSelection.h"
+#include "selections/BasicEventSelection.h"
+#include "selections/BasicTrackSelection.h"
+#include "selections/TruthIsolatedTrackSelection.h"
 
-#include "TrackResolutionModule.h"
-#include "EOverPModule.h"
-#include "TrackRatesModule.h"
-
-const bool TOWER_FLAG = true;
-const bool TRUTH_FLAG = true;
+#include "modules/TrackResolutionModule.h"
+#include "modules/EOverPModule.h"
+#include "modules/TrackRatesModule.h"
 
 void IsotrackTreesAnalysis::Loop(){
     // Get the number of entries in the TChain
@@ -48,20 +45,12 @@ void IsotrackTreesAnalysis::Loop(){
 // Process an event
 void IsotrackTreesAnalysis::processEvent(){
 
-    const float CENTRALITY_CUT = 20.0;
-
-    if(basicEventSelection(CENTRALITY_CUT)){
-        const float D0_CUT = 0.15; // m
-        const float Z0_CUT = 0.15; // m
-        const float PT_CUT = 0.5;  // GeV
-        const float MATCHED_PT_CUT = 0.2; // GeV
-        const float MATCHED_DR_CUT = 0.4;
-        const float MATCHED_ETA_CUT = 1.0; 
+    if(basicEventSelection()){
 
         for(int i = 0; i < m_trkmult; i++){
-            if(basicTrackSelection(i,D0_CUT,Z0_CUT,PT_CUT,MATCHED_PT_CUT,MATCHED_DR_CUT)){
+            if(basicTrackSelection(i)){
                 //std::cout << "pass track selection" << std::endl;
-                if(!TRUTH_FLAG || (TRUTH_FLAG && truthIsolatedTrackSelection(i,MATCHED_PT_CUT,MATCHED_ETA_CUT,MATCHED_DR_CUT))) {
+                if(!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))) {
                     processTrack(i);
                 } 
             }
@@ -76,14 +65,14 @@ void IsotrackTreesAnalysis::processTrack(int id){
     MatchedClusterContainer ohcalClusters;
 
     // Calculate the ids of all matched clusters
-    if (TOWER_FLAG) {
-        cemcClusters  = getMatchedTowers(id,cemc,0.2);
-        ihcalClusters = getMatchedTowers(id,ihcal,0.2);
-        ohcalClusters = getMatchedTowers(id,ohcal,0.2);
+    if (USE_TOWER_INFO) {
+        cemcClusters  = getMatchedTowers(id,cemc,CEMC_MATCHING_DR_CUT);
+        ihcalClusters = getMatchedTowers(id,ihcal,IHCAL_MATCHING_DR_CUT);
+        ohcalClusters = getMatchedTowers(id,ohcal,OHCAL_MATCHING_DR_CUT);
     } else {
-        cemcClusters  = getMatchedClusters(id,cemc,0.2);
-        ihcalClusters = getMatchedClusters(id,ihcal,0.2);
-        ohcalClusters = getMatchedClusters(id,ohcal,0.2);
+        cemcClusters  = getMatchedClusters(id,cemc,CEMC_MATCHING_DR_CUT);
+        ihcalClusters = getMatchedClusters(id,ihcal,IHCAL_MATCHING_DR_CUT);
+        ohcalClusters = getMatchedClusters(id,ohcal,OHCAL_MATCHING_DR_CUT);
     }
     
     // Calculate energy of matched clusters
@@ -99,13 +88,6 @@ void IsotrackTreesAnalysis::processTrack(int id){
 
     //trackResolutionModule(id, totalEnergy);
     eOverPModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
-    /*
-    std::cout << "Isotrack found: " << m_tr_pt[id] << "\t" << m_tr_eta[id] << "\t" << m_tr_phi[id] << std::endl;
-    std::cout << "Matched clusters: " << std::endl;
 
-    for(int i = 0; i < cemcClusters.getNumberOfClusters(); i++){
-        std::cout << cemcClusters.eta[i] << "\t" << cemcClusters.phi[i] << std::endl;
-    }
-    */
 }
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "IsotrackTreesAnalysis.h"
+#include "../IsotrackTreesAnalysis.h"
 #include <TVector3.h>
 #include <string>
 
@@ -38,11 +38,7 @@ void IsotrackTreesAnalysis::eOverPModule(int id, float totalEnergy, MatchedClust
       if (centrality > centrality_array[j-1]&& centrality < centrality_array[j]) histEoverP[3+j]->Fill(totalEnergy / m_tr_p[id], m_tr_p[id]);
     }
   }
-
-  // background calculation 
-  const float CEMC_MIP_ENERGY = 0.35; // GeV
-  const float IHCAL_MIP_ENERGY = 0.1; // GeV
-
+ 
   if (R1CemcEnergy < CEMC_MIP_ENERGY && R1IhcalEnergy < IHCAL_MIP_ENERGY && R2OhcalEnergy/m_tr_p[id] > 0.4) {
 
     float R1Energy = R1CemcEnergy + R1IhcalEnergy;

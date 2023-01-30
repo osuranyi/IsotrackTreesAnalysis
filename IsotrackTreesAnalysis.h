@@ -15,331 +15,396 @@
 #include <TFile.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TRandom3.h>
 #include <iostream>
 #include <fstream>
 
 // Header file for the classes stored in the TTree if any.
 
 class IsotrackTreesAnalysis {
-  public :
-   TChain          *fChainTracks;   //!pointer to the analyzed TTree or TChain
-   TChain          *fChainClusters;
-   TChain          *fChainTowers;
-   TChain          *fChainSimTowers;
-   TChain          *fChainHepMC;
-   TChain          *fChainG4;
-   TChain          *fChainCentrality;
+    private :
 
-   Int_t           fCurrent; //!current Tree number in a TChain
+        ////////////////////////////
+        // Input option variables //
+        ////////////////////////////
+       
+        bool USE_TOWER_INFO;
+        bool USE_TRUTH_INFO;
 
-// Fixed size dimensions of array or collections stored in the TTree if any.
+        float CENTRALITY_CUT;
 
-   ///////////////////////////////////////
-   // Track tree variables and branches //
-   ///////////////////////////////////////
+        // track cuts
+        float D0_CUT; // m
+        float Z0_CUT; // m
+        float PT_CUT;  // GeV
 
-   // Declaration of leaf types
-   Int_t           m_trkmult;
-   Float_t         m_tr_p[2000];   //[m_trkmult]
-   Float_t         m_tr_pt[2000];   //[m_trkmult]
-   Float_t         m_tr_eta[2000];   //[m_trkmult]
-   Float_t         m_tr_phi[2000];   //[m_trkmult]
-   Int_t           m_tr_charge[2000];   //[m_trkmult]
-   Float_t         m_tr_chisq[2000];   //[m_trkmult]
-   Int_t           m_tr_ndf[2000];   //[m_trkmult]
-   Float_t         m_tr_dca_xy[2000];   //[m_trkmult]
-   Float_t         m_tr_dca_xy_error[2000];   //[m_trkmult]
-   Float_t         m_tr_dca_z[2000];   //[m_trkmult]
-   Float_t         m_tr_dca_z_error[2000];   //[m_trkmult]
-   Float_t         m_tr_x[2000];   //[m_trkmult]
-   Float_t         m_tr_y[2000];   //[m_trkmult]
-   Float_t         m_tr_z[2000];   //[m_trkmult]
-   Int_t           m_tr_vertex_id[2000];   //[m_trkmult]
-   Int_t           m_vtxmult;
-   Int_t           m_vertex_id[10];   //[m_vtxmult]
-   Float_t         m_vx[10];   //[m_vtxmult]
-   Float_t         m_vy[10];   //[m_vtxmult]
-   Float_t         m_vz[10];   //[m_vtxmult]
-   Float_t         m_tr_cemc_eta[2000];   //[m_trkmult]
-   Float_t         m_tr_cemc_phi[2000];   //[m_trkmult]
-   Float_t         m_tr_ihcal_eta[2000];   //[m_trkmult]
-   Float_t         m_tr_ihcal_phi[2000];   //[m_trkmult]
-   Float_t         m_tr_ohcal_eta[2000];   //[m_trkmult]
-   Float_t         m_tr_ohcal_phi[2000];   //[m_trkmult]
-   Int_t           m_tr_truth_pid[2000];   //[m_trkmult]
-   Int_t           m_tr_truth_is_primary[2000];   //[m_trkmult]
-   Float_t         m_tr_truth_e[2000];   //[m_trkmult]
-   Float_t         m_tr_truth_pt[2000];   //[m_trkmult]
-   Float_t         m_tr_truth_eta[2000];   //[m_trkmult]
-   Float_t         m_tr_truth_phi[2000];   //[m_trkmult]
+        // cuts for matching to other tracks
+        float MATCHED_PT_CUT; // GeV
+        float MATCHED_DR_CUT;
+        float MATCHED_ETA_CUT; 
 
-   // List of branches
-   TBranch        *b_m_trkmult;   //!
-   TBranch        *b_m_tr_p;   //!
-   TBranch        *b_m_tr_pt;   //!
-   TBranch        *b_m_tr_eta;   //!
-   TBranch        *b_m_tr_phi;   //!
-   TBranch        *b_m_tr_charge;   //!
-   TBranch        *b_m_tr_chisq;   //!
-   TBranch        *b_m_tr_ndf;   //!
-   TBranch        *b_m_tr_dca_xy;   //!
-   TBranch        *b_m_tr_dca_xy_error;   //!
-   TBranch        *b_m_tr_dca_z;   //!
-   TBranch        *b_m_tr_dca_z_error;   //!
-   TBranch        *b_m_tr_x;   //!
-   TBranch        *b_m_tr_y;   //!
-   TBranch        *b_m_tr_z;   //!
-   TBranch        *b_m_tr_vertex_id;   //!
-   TBranch        *b_m_vtxmult;   //!
-   TBranch        *b_m_vertex_id;   //!
-   TBranch        *b_m_vx;   //!
-   TBranch        *b_m_vy;   //!
-   TBranch        *b_m_vz;   //!
-   TBranch        *b_m_tr_cemc_eta;   //!
-   TBranch        *b_m_tr_cemc_phi;   //!
-   TBranch        *b_m_tr_ihcal_eta;   //!
-   TBranch        *b_m_tr_ihcal_phi;   //!
-   TBranch        *b_m_tr_ohcal_eta;   //!
-   TBranch        *b_m_tr_ohcal_phi;   //!
-   TBranch        *b_m_tr_truth_pid;   //!
-   TBranch        *b_m_tr_truth_is_primary;   //!
-   TBranch        *b_m_tr_truth_e;   //!
-   TBranch        *b_m_tr_truth_pt;   //!
-   TBranch        *b_m_tr_truth_eta;   //!
-   TBranch        *b_m_tr_truth_phi;   //!
+        // cuts for matching to neutral truth particles
+        float MATCHED_NEUTRAL_TRUTH_PT_CUT; // GeV
+        float MATCHED_NEUTRAL_TRUTH_ETA_CUT;
+        float MATCHED_NEUTRAL_TRUTH_DR_CUT;
 
-   /////////////////////////////////////////
-   // Cluster tree variables and branches //
-   /////////////////////////////////////////
+        // cuts for cluster matching
+        float CEMC_MATCHING_DR_CUT;
+        float IHCAL_MATCHING_DR_CUT;
+        float OHCAL_MATCHING_DR_CUT;
 
-   // Declaration of leaf types
-   Int_t           m_clsmult_cemc;
-   Float_t         m_cl_cemc_e[5000];   //[m_clsmult_cemc]
-   Float_t         m_cl_cemc_eta[5000];   //[m_clsmult_cemc]
-   Float_t         m_cl_cemc_phi[5000];   //[m_clsmult_cemc]
-   Float_t         m_cl_cemc_r[5000];   //[m_clsmult_cemc]
-   Float_t         m_cl_cemc_z[5000];   //[m_clsmult_cemc]
-   Int_t           m_clsmult_ihcal;
-   Float_t         m_cl_ihcal_e[1000];   //[m_clsmult_ihcal]
-   Float_t         m_cl_ihcal_eta[1000];   //[m_clsmult_ihcal]
-   Float_t         m_cl_ihcal_phi[1000];   //[m_clsmult_ihcal]
-   Float_t         m_cl_ihcal_r[1000];   //[m_clsmult_ihcal]
-   Float_t         m_cl_ihcal_z[1000];   //[m_clsmult_ihcal]
-   Int_t           m_clsmult_ohcal;
-   Float_t         m_cl_ohcal_e[1000];   //[m_clsmult_ohcal]
-   Float_t         m_cl_ohcal_eta[1000];   //[m_clsmult_ohcal]
-   Float_t         m_cl_ohcal_phi[1000];   //[m_clsmult_ohcal]
-   Float_t         m_cl_ohcal_r[1000];   //[m_clsmult_ohcal]
-   Float_t         m_cl_ohcal_z[1000];   //[m_clsmult_ohcal]
+        // MIP cuts
+        float CEMC_MIP_ENERGY; // GeV
+        float IHCAL_MIP_ENERGY; // GeV
 
-   // List of branches
-   TBranch        *b_m_clsmult_cemc;   //!
-   TBranch        *b_m_cl_cemc_e;   //!
-   TBranch        *b_m_cl_cemc_eta;   //!
-   TBranch        *b_m_cl_cemc_phi;   //!
-   TBranch        *b_m_cl_cemc_r;   //!
-   TBranch        *b_m_cl_cemc_z;   //!
-   TBranch        *b_m_clsmult_ihcal;   //!
-   TBranch        *b_m_cl_ihcal_e;   //!
-   TBranch        *b_m_cl_ihcal_eta;   //!
-   TBranch        *b_m_cl_ihcal_phi;   //!
-   TBranch        *b_m_cl_ihcal_r;   //!
-   TBranch        *b_m_cl_ihcal_z;   //!
-   TBranch        *b_m_clsmult_ohcal;   //!
-   TBranch        *b_m_cl_ohcal_e;   //!
-   TBranch        *b_m_cl_ohcal_eta;   //!
-   TBranch        *b_m_cl_ohcal_phi;   //!
-   TBranch        *b_m_cl_ohcal_r;   //!
-   TBranch        *b_m_cl_ohcal_z;   //!
+        /////////////
+        // TChains //
+        /////////////
 
-   ///////////////////////////////////////
-   // Tower tree variables and branches //
-   ///////////////////////////////////////
+        TChain          *fChainTracks;   //!pointer to the analyzed TTree or TChain
+        TChain          *fChainClusters;
+        TChain          *fChainTowers;
+        TChain          *fChainSimTowers;
+        TChain          *fChainHepMC;
+        TChain          *fChainG4;
+        TChain          *fChainCentrality;
 
-   // Declaration of leaf types
-   Int_t           m_twrmult_cemc;
-   Float_t         m_twr_cemc_e[25000];   //[m_twrmult_cemc]
-   Float_t         m_twr_cemc_eta[25000];   //[m_twrmult_cemc]
-   Float_t         m_twr_cemc_phi[25000];   //[m_twrmult_cemc]
-   Int_t           m_twr_cemc_ieta[25000];   //[m_twrmult_cemc]
-   Int_t           m_twr_cemc_iphi[25000];   //[m_twrmult_cemc]
-   Int_t           m_twrmult_ihcal;
-   Float_t         m_twr_ihcal_e[2000];   //[m_twrmult_ihcal]
-   Float_t         m_twr_ihcal_eta[2000];   //[m_twrmult_ihcal]
-   Float_t         m_twr_ihcal_phi[2000];   //[m_twrmult_ihcal]
-   Int_t           m_twr_ihcal_ieta[2000];   //[m_twrmult_ihcal]
-   Int_t           m_twr_ihcal_iphi[2000];   //[m_twrmult_ihcal]
-   Int_t           m_twrmult_ohcal;
-   Float_t         m_twr_ohcal_e[2000];   //[m_twrmult_ohcal]
-   Float_t         m_twr_ohcal_eta[2000];   //[m_twrmult_ohcal]
-   Float_t         m_twr_ohcal_phi[2000];   //[m_twrmult_ohcal]
-   Int_t           m_twr_ohcal_ieta[2000];   //[m_twrmult_ohcal]
-   Int_t           m_twr_ohcal_iphi[2000];   //[m_twrmult_ohcal]
+        Int_t           fCurrent; //!current Tree number in a TChain
 
-   // List of branches
-   TBranch        *b_m_twrmult_cemc;   //!
-   TBranch        *b_m_twr_cemc_e;   //!
-   TBranch        *b_m_twr_cemc_eta;   //!
-   TBranch        *b_m_twr_cemc_phi;   //!
-   TBranch        *b_m_twr_cemc_ieta;   //!
-   TBranch        *b_m_twr_cemc_iphi;   //!
-   TBranch        *b_m_twrmult_ihcal;   //!
-   TBranch        *b_m_twr_ihcal_e;   //!
-   TBranch        *b_m_twr_ihcal_eta;   //!
-   TBranch        *b_m_twr_ihcal_phi;   //!
-   TBranch        *b_m_twr_ihcal_ieta;   //!
-   TBranch        *b_m_twr_ihcal_iphi;   //!
-   TBranch        *b_m_twrmult_ohcal;   //!
-   TBranch        *b_m_twr_ohcal_e;   //!
-   TBranch        *b_m_twr_ohcal_eta;   //!
-   TBranch        *b_m_twr_ohcal_phi;   //!
-   TBranch        *b_m_twr_ohcal_ieta;   //!
-   TBranch        *b_m_twr_ohcal_iphi;   //!
+        // Fixed size dimensions of array or collections stored in the TTree if any.
 
-   //////////////////////////////////////
-   // Sim tower variables and branches //
-   //////////////////////////////////////
+        ///////////////////////////////////////
+        // Track tree variables and branches //
+        ///////////////////////////////////////
 
-   // Declaration of leaf types
-   Int_t           m_simtwrmult_cemc;
-   Float_t         m_simtwr_cemc_e[20871];   //[m_simtwrmult_cemc]
-   Float_t         m_simtwr_cemc_eta[20871];   //[m_simtwrmult_cemc]
-   Float_t         m_simtwr_cemc_phi[20871];   //[m_simtwrmult_cemc]
-   Int_t           m_simtwr_cemc_ieta[20871];   //[m_simtwrmult_cemc]
-   Int_t           m_simtwr_cemc_iphi[20871];   //[m_simtwrmult_cemc]
-   Int_t           m_simtwrmult_ihcal;
-   Float_t         m_simtwr_ihcal_e[1536];   //[m_simtwrmult_ihcal]
-   Float_t         m_simtwr_ihcal_eta[1536];   //[m_simtwrmult_ihcal]
-   Float_t         m_simtwr_ihcal_phi[1536];   //[m_simtwrmult_ihcal]
-   Int_t           m_simtwr_ihcal_ieta[1536];   //[m_simtwrmult_ihcal]
-   Int_t           m_simtwr_ihcal_iphi[1536];   //[m_simtwrmult_ihcal]
-   Int_t           m_simtwrmult_ohcal;
-   Float_t         m_simtwr_ohcal_e[1507];   //[m_simtwrmult_ohcal]
-   Float_t         m_simtwr_ohcal_eta[1507];   //[m_simtwrmult_ohcal]
-   Float_t         m_simtwr_ohcal_phi[1507];   //[m_simtwrmult_ohcal]
-   Int_t           m_simtwr_ohcal_ieta[1507];   //[m_simtwrmult_ohcal]
-   Int_t           m_simtwr_ohcal_iphi[1507];   //[m_simtwrmult_ohcal]
+        // Declaration of leaf types
+        Int_t           m_trkmult;
+        Float_t         m_tr_p[2000];   //[m_trkmult]
+        Float_t         m_tr_pt[2000];   //[m_trkmult]
+        Float_t         m_tr_eta[2000];   //[m_trkmult]
+        Float_t         m_tr_phi[2000];   //[m_trkmult]
+        Int_t           m_tr_charge[2000];   //[m_trkmult]
+        Float_t         m_tr_chisq[2000];   //[m_trkmult]
+        Int_t           m_tr_ndf[2000];   //[m_trkmult]
+        Float_t         m_tr_dca_xy[2000];   //[m_trkmult]
+        Float_t         m_tr_dca_xy_error[2000];   //[m_trkmult]
+        Float_t         m_tr_dca_z[2000];   //[m_trkmult]
+        Float_t         m_tr_dca_z_error[2000];   //[m_trkmult]
+        Float_t         m_tr_x[2000];   //[m_trkmult]
+        Float_t         m_tr_y[2000];   //[m_trkmult]
+        Float_t         m_tr_z[2000];   //[m_trkmult]
+        Int_t           m_tr_vertex_id[2000];   //[m_trkmult]
+        Int_t           m_vtxmult;
+        Int_t           m_vertex_id[10];   //[m_vtxmult]
+        Float_t         m_vx[10];   //[m_vtxmult]
+        Float_t         m_vy[10];   //[m_vtxmult]
+        Float_t         m_vz[10];   //[m_vtxmult]
+        Float_t         m_tr_cemc_eta[2000];   //[m_trkmult]
+        Float_t         m_tr_cemc_phi[2000];   //[m_trkmult]
+        Float_t         m_tr_ihcal_eta[2000];   //[m_trkmult]
+        Float_t         m_tr_ihcal_phi[2000];   //[m_trkmult]
+        Float_t         m_tr_ohcal_eta[2000];   //[m_trkmult]
+        Float_t         m_tr_ohcal_phi[2000];   //[m_trkmult]
+        Int_t           m_tr_truth_pid[2000];   //[m_trkmult]
+        Int_t           m_tr_truth_is_primary[2000];   //[m_trkmult]
+        Float_t         m_tr_truth_e[2000];   //[m_trkmult]
+        Float_t         m_tr_truth_pt[2000];   //[m_trkmult]
+        Float_t         m_tr_truth_eta[2000];   //[m_trkmult]
+        Float_t         m_tr_truth_phi[2000];   //[m_trkmult]
 
-   // List of branches
-   TBranch        *b_m_simtwrmult_cemc;   //!
-   TBranch        *b_m_simtwr_cemc_e;   //!
-   TBranch        *b_m_simtwr_cemc_eta;   //!
-   TBranch        *b_m_simtwr_cemc_phi;   //!
-   TBranch        *b_m_simtwr_cemc_ieta;   //!
-   TBranch        *b_m_simtwr_cemc_iphi;   //!
-   TBranch        *b_m_simtwrmult_ihcal;   //!
-   TBranch        *b_m_simtwr_ihcal_e;   //!
-   TBranch        *b_m_simtwr_ihcal_eta;   //!
-   TBranch        *b_m_simtwr_ihcal_phi;   //!
-   TBranch        *b_m_simtwr_ihcal_ieta;   //!
-   TBranch        *b_m_simtwr_ihcal_iphi;   //!
-   TBranch        *b_m_simtwrmult_ohcal;   //!
-   TBranch        *b_m_simtwr_ohcal_e;   //!
-   TBranch        *b_m_simtwr_ohcal_eta;   //!
-   TBranch        *b_m_simtwr_ohcal_phi;   //!
-   TBranch        *b_m_simtwr_ohcal_ieta;   //!
-   TBranch        *b_m_simtwr_ohcal_iphi;   //!
+        // List of branches
+        TBranch        *b_m_trkmult;   //!
+        TBranch        *b_m_tr_p;   //!
+        TBranch        *b_m_tr_pt;   //!
+        TBranch        *b_m_tr_eta;   //!
+        TBranch        *b_m_tr_phi;   //!
+        TBranch        *b_m_tr_charge;   //!
+        TBranch        *b_m_tr_chisq;   //!
+        TBranch        *b_m_tr_ndf;   //!
+        TBranch        *b_m_tr_dca_xy;   //!
+        TBranch        *b_m_tr_dca_xy_error;   //!
+        TBranch        *b_m_tr_dca_z;   //!
+        TBranch        *b_m_tr_dca_z_error;   //!
+        TBranch        *b_m_tr_x;   //!
+        TBranch        *b_m_tr_y;   //!
+        TBranch        *b_m_tr_z;   //!
+        TBranch        *b_m_tr_vertex_id;   //!
+        TBranch        *b_m_vtxmult;   //!
+        TBranch        *b_m_vertex_id;   //!
+        TBranch        *b_m_vx;   //!
+        TBranch        *b_m_vy;   //!
+        TBranch        *b_m_vz;   //!
+        TBranch        *b_m_tr_cemc_eta;   //!
+        TBranch        *b_m_tr_cemc_phi;   //!
+        TBranch        *b_m_tr_ihcal_eta;   //!
+        TBranch        *b_m_tr_ihcal_phi;   //!
+        TBranch        *b_m_tr_ohcal_eta;   //!
+        TBranch        *b_m_tr_ohcal_phi;   //!
+        TBranch        *b_m_tr_truth_pid;   //!
+        TBranch        *b_m_tr_truth_is_primary;   //!
+        TBranch        *b_m_tr_truth_e;   //!
+        TBranch        *b_m_tr_truth_pt;   //!
+        TBranch        *b_m_tr_truth_eta;   //!
+        TBranch        *b_m_tr_truth_phi;   //!
 
-   ////////////////////////////////////////
-   // HepMC truth variables and branches //
-   ////////////////////////////////////////
+        /////////////////////////////////////////
+        // Cluster tree variables and branches //
+        /////////////////////////////////////////
 
-   // Declaration of leaf types
-   Int_t           m_hepmc;
-   Int_t           m_hepmc_pid[20000];   //[m_hepmc]
-   Float_t         m_hepmc_e[20000];   //[m_hepmc]
-   Float_t         m_hepmc_pt[20000];   //[m_hepmc]
-   Float_t         m_hepmc_eta[20000];   //[m_hepmc]
-   Float_t         m_hepmc_phi[20000];   //[m_hepmc]
+        // Declaration of leaf types
+        Int_t           m_clsmult_cemc;
+        Float_t         m_cl_cemc_e[5000];   //[m_clsmult_cemc]
+        Float_t         m_cl_cemc_eta[5000];   //[m_clsmult_cemc]
+        Float_t         m_cl_cemc_phi[5000];   //[m_clsmult_cemc]
+        Float_t         m_cl_cemc_r[5000];   //[m_clsmult_cemc]
+        Float_t         m_cl_cemc_z[5000];   //[m_clsmult_cemc]
+        Int_t           m_clsmult_ihcal;
+        Float_t         m_cl_ihcal_e[1000];   //[m_clsmult_ihcal]
+        Float_t         m_cl_ihcal_eta[1000];   //[m_clsmult_ihcal]
+        Float_t         m_cl_ihcal_phi[1000];   //[m_clsmult_ihcal]
+        Float_t         m_cl_ihcal_r[1000];   //[m_clsmult_ihcal]
+        Float_t         m_cl_ihcal_z[1000];   //[m_clsmult_ihcal]
+        Int_t           m_clsmult_ohcal;
+        Float_t         m_cl_ohcal_e[1000];   //[m_clsmult_ohcal]
+        Float_t         m_cl_ohcal_eta[1000];   //[m_clsmult_ohcal]
+        Float_t         m_cl_ohcal_phi[1000];   //[m_clsmult_ohcal]
+        Float_t         m_cl_ohcal_r[1000];   //[m_clsmult_ohcal]
+        Float_t         m_cl_ohcal_z[1000];   //[m_clsmult_ohcal]
 
-   // List of branches
-   TBranch        *b_m_hepmc;   //!
-   TBranch        *b_m_hepmc_pid;   //!
-   TBranch        *b_m_hepmc_e;   //!
-   TBranch        *b_m_hepmc_pt;   //!
-   TBranch        *b_m_hepmc_eta;   //!
-   TBranch        *b_m_hepmc_phi;   //!
+        // List of branches
+        TBranch        *b_m_clsmult_cemc;   //!
+        TBranch        *b_m_cl_cemc_e;   //!
+        TBranch        *b_m_cl_cemc_eta;   //!
+        TBranch        *b_m_cl_cemc_phi;   //!
+        TBranch        *b_m_cl_cemc_r;   //!
+        TBranch        *b_m_cl_cemc_z;   //!
+        TBranch        *b_m_clsmult_ihcal;   //!
+        TBranch        *b_m_cl_ihcal_e;   //!
+        TBranch        *b_m_cl_ihcal_eta;   //!
+        TBranch        *b_m_cl_ihcal_phi;   //!
+        TBranch        *b_m_cl_ihcal_r;   //!
+        TBranch        *b_m_cl_ihcal_z;   //!
+        TBranch        *b_m_clsmult_ohcal;   //!
+        TBranch        *b_m_cl_ohcal_e;   //!
+        TBranch        *b_m_cl_ohcal_eta;   //!
+        TBranch        *b_m_cl_ohcal_phi;   //!
+        TBranch        *b_m_cl_ohcal_r;   //!
+        TBranch        *b_m_cl_ohcal_z;   //!
 
-   /////////////////////////////////////
-   // G4 truth variables and branches //
-   /////////////////////////////////////
- 
-   // Declaration of leaf types
-   Int_t           m_g4;
-   Int_t           m_g4_pid[20000];   //[m_g4]
-   Float_t         m_g4_e[20000];   //[m_g4]
-   Float_t         m_g4_pt[20000];   //[m_g4]
-   Float_t         m_g4_eta[20000];   //[m_g4]
-   Float_t         m_g4_phi[20000];   //[m_g4]
+        ///////////////////////////////////////
+        // Tower tree variables and branches //
+        ///////////////////////////////////////
 
-   // List of branches
-   TBranch        *b_m_g4;   //!
-   TBranch        *b_m_g4_pid;   //!
-   TBranch        *b_m_g4_e;   //!
-   TBranch        *b_m_g4_pt;   //!
-   TBranch        *b_m_g4_eta;   //!
-   TBranch        *b_m_g4_phi;   //!
-  
+        // Declaration of leaf types
+        Int_t           m_twrmult_cemc;
+        Float_t         m_twr_cemc_e[25000];   //[m_twrmult_cemc]
+        Float_t         m_twr_cemc_eta[25000];   //[m_twrmult_cemc]
+        Float_t         m_twr_cemc_phi[25000];   //[m_twrmult_cemc]
+        Int_t           m_twr_cemc_ieta[25000];   //[m_twrmult_cemc]
+        Int_t           m_twr_cemc_iphi[25000];   //[m_twrmult_cemc]
+        Int_t           m_twrmult_ihcal;
+        Float_t         m_twr_ihcal_e[2000];   //[m_twrmult_ihcal]
+        Float_t         m_twr_ihcal_eta[2000];   //[m_twrmult_ihcal]
+        Float_t         m_twr_ihcal_phi[2000];   //[m_twrmult_ihcal]
+        Int_t           m_twr_ihcal_ieta[2000];   //[m_twrmult_ihcal]
+        Int_t           m_twr_ihcal_iphi[2000];   //[m_twrmult_ihcal]
+        Int_t           m_twrmult_ohcal;
+        Float_t         m_twr_ohcal_e[2000];   //[m_twrmult_ohcal]
+        Float_t         m_twr_ohcal_eta[2000];   //[m_twrmult_ohcal]
+        Float_t         m_twr_ohcal_phi[2000];   //[m_twrmult_ohcal]
+        Int_t           m_twr_ohcal_ieta[2000];   //[m_twrmult_ohcal]
+        Int_t           m_twr_ohcal_iphi[2000];   //[m_twrmult_ohcal]
 
-   ///////////////////////////////////////
-   // Centrality variables and branches //
-   ///////////////////////////////////////
+        // List of branches
+        TBranch        *b_m_twrmult_cemc;   //!
+        TBranch        *b_m_twr_cemc_e;   //!
+        TBranch        *b_m_twr_cemc_eta;   //!
+        TBranch        *b_m_twr_cemc_phi;   //!
+        TBranch        *b_m_twr_cemc_ieta;   //!
+        TBranch        *b_m_twr_cemc_iphi;   //!
+        TBranch        *b_m_twrmult_ihcal;   //!
+        TBranch        *b_m_twr_ihcal_e;   //!
+        TBranch        *b_m_twr_ihcal_eta;   //!
+        TBranch        *b_m_twr_ihcal_phi;   //!
+        TBranch        *b_m_twr_ihcal_ieta;   //!
+        TBranch        *b_m_twr_ihcal_iphi;   //!
+        TBranch        *b_m_twrmult_ohcal;   //!
+        TBranch        *b_m_twr_ohcal_e;   //!
+        TBranch        *b_m_twr_ohcal_eta;   //!
+        TBranch        *b_m_twr_ohcal_phi;   //!
+        TBranch        *b_m_twr_ohcal_ieta;   //!
+        TBranch        *b_m_twr_ohcal_iphi;   //!
 
-   // Declaration of leaf types
-   Float_t         centrality;
+        //////////////////////////////////////
+        // Sim tower variables and branches //
+        //////////////////////////////////////
 
-   // List of branches
-   TBranch        *b_centrality;   //!
+        // Declaration of leaf types
+        Int_t           m_simtwrmult_cemc;
+        Float_t         m_simtwr_cemc_e[20871];   //[m_simtwrmult_cemc]
+        Float_t         m_simtwr_cemc_eta[20871];   //[m_simtwrmult_cemc]
+        Float_t         m_simtwr_cemc_phi[20871];   //[m_simtwrmult_cemc]
+        Int_t           m_simtwr_cemc_ieta[20871];   //[m_simtwrmult_cemc]
+        Int_t           m_simtwr_cemc_iphi[20871];   //[m_simtwrmult_cemc]
+        Int_t           m_simtwrmult_ihcal;
+        Float_t         m_simtwr_ihcal_e[1536];   //[m_simtwrmult_ihcal]
+        Float_t         m_simtwr_ihcal_eta[1536];   //[m_simtwrmult_ihcal]
+        Float_t         m_simtwr_ihcal_phi[1536];   //[m_simtwrmult_ihcal]
+        Int_t           m_simtwr_ihcal_ieta[1536];   //[m_simtwrmult_ihcal]
+        Int_t           m_simtwr_ihcal_iphi[1536];   //[m_simtwrmult_ihcal]
+        Int_t           m_simtwrmult_ohcal;
+        Float_t         m_simtwr_ohcal_e[1507];   //[m_simtwrmult_ohcal]
+        Float_t         m_simtwr_ohcal_eta[1507];   //[m_simtwrmult_ohcal]
+        Float_t         m_simtwr_ohcal_phi[1507];   //[m_simtwrmult_ohcal]
+        Int_t           m_simtwr_ohcal_ieta[1507];   //[m_simtwrmult_ohcal]
+        Int_t           m_simtwr_ohcal_iphi[1507];   //[m_simtwrmult_ohcal]
+
+        // List of branches
+        TBranch        *b_m_simtwrmult_cemc;   //!
+        TBranch        *b_m_simtwr_cemc_e;   //!
+        TBranch        *b_m_simtwr_cemc_eta;   //!
+        TBranch        *b_m_simtwr_cemc_phi;   //!
+        TBranch        *b_m_simtwr_cemc_ieta;   //!
+        TBranch        *b_m_simtwr_cemc_iphi;   //!
+        TBranch        *b_m_simtwrmult_ihcal;   //!
+        TBranch        *b_m_simtwr_ihcal_e;   //!
+        TBranch        *b_m_simtwr_ihcal_eta;   //!
+        TBranch        *b_m_simtwr_ihcal_phi;   //!
+        TBranch        *b_m_simtwr_ihcal_ieta;   //!
+        TBranch        *b_m_simtwr_ihcal_iphi;   //!
+        TBranch        *b_m_simtwrmult_ohcal;   //!
+        TBranch        *b_m_simtwr_ohcal_e;   //!
+        TBranch        *b_m_simtwr_ohcal_eta;   //!
+        TBranch        *b_m_simtwr_ohcal_phi;   //!
+        TBranch        *b_m_simtwr_ohcal_ieta;   //!
+        TBranch        *b_m_simtwr_ohcal_iphi;   //!
+
+        ////////////////////////////////////////
+        // HepMC truth variables and branches //
+        ////////////////////////////////////////
+
+        // Declaration of leaf types
+        Int_t           m_hepmc;
+        Int_t           m_hepmc_pid[20000];   //[m_hepmc]
+        Float_t         m_hepmc_e[20000];   //[m_hepmc]
+        Float_t         m_hepmc_pt[20000];   //[m_hepmc]
+        Float_t         m_hepmc_eta[20000];   //[m_hepmc]
+        Float_t         m_hepmc_phi[20000];   //[m_hepmc]
+
+        // List of branches
+        TBranch        *b_m_hepmc;   //!
+        TBranch        *b_m_hepmc_pid;   //!
+        TBranch        *b_m_hepmc_e;   //!
+        TBranch        *b_m_hepmc_pt;   //!
+        TBranch        *b_m_hepmc_eta;   //!
+        TBranch        *b_m_hepmc_phi;   //!
+
+        /////////////////////////////////////
+        // G4 truth variables and branches //
+        /////////////////////////////////////
+
+        // Declaration of leaf types
+        Int_t           m_g4;
+        Int_t           m_g4_pid[20000];   //[m_g4]
+        Float_t         m_g4_e[20000];   //[m_g4]
+        Float_t         m_g4_pt[20000];   //[m_g4]
+        Float_t         m_g4_eta[20000];   //[m_g4]
+        Float_t         m_g4_phi[20000];   //[m_g4]
+
+        // List of branches
+        TBranch        *b_m_g4;   //!
+        TBranch        *b_m_g4_pid;   //!
+        TBranch        *b_m_g4_e;   //!
+        TBranch        *b_m_g4_pt;   //!
+        TBranch        *b_m_g4_eta;   //!
+        TBranch        *b_m_g4_phi;   //!
 
 
-   enum caloType{cemc=0, ihcal=1, ohcal=2};
+        ///////////////////////////////////////
+        // Centrality variables and branches //
+        ///////////////////////////////////////
 
-   ////////////////
-   // Histograms //
-   ////////////////
+        // Declaration of leaf types
+        Float_t         centrality;
 
-   TH2F* histEoverP_2D[5];
-   TH2F* histEoverP[8];
-   TH2F* histEoverPBkg[8];
-   TH1F* histECemcBkg[8];
-   TH1F* histEIhcalBkg[8];
+        // List of branches
+        TBranch        *b_centrality;   //!
 
-   IsotrackTreesAnalysis();
-   virtual ~IsotrackTreesAnalysis();
-   virtual Int_t    Cut(Long64_t entry);
-   virtual void    GetEntry(Long64_t entry);
-   virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init();
-   virtual void     Loop();
-   virtual Bool_t   Notify();
-   virtual void     Show(Long64_t entry = -1);
-   
-   void processEvent();
-   void processTrack(int id);
-   bool basicEventSelection(float centralityCut);
-   bool basicTrackSelection(int id, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut);
-   bool truthIsolatedTrackSelection(int id, float matchedPtCut, float matchedEtaCut, float matchedDrCut);
 
-   MatchedClusterContainer getMatchedClusters(int id, caloType type, float dRThreshold);
-   MatchedClusterContainer getMatchedTowers(int id, caloType type, float dRThreshold);
+        enum caloType{cemc=0, ihcal=1, ohcal=2};
 
-   // Modules
-   void initTrackResolutionModule();
-   void trackResolutionModule(int id, float totalEnergy);
-   void initEOverPModule();
-   void eOverPModule(int id, float totalEnergy, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
-   void trackRatesModule();
+        ////////////////
+        // Histograms //
+        ////////////////
 
+        TH2F* histEoverP_2D[5];
+        TH2F* histEoverP[8];
+        TH2F* histEoverPBkg[8];
+        TH1F* histECemcBkg[8];
+        TH1F* histEIhcalBkg[8];
+
+        
+        /////////////////////////////
+        // Random number generator //
+        /////////////////////////////
+    
+        TRandom3* rand = new TRandom3(123);
+
+    public:
+
+        IsotrackTreesAnalysis(std::string inputFilename, bool useTruthInfo, bool useTowerInfo, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy);
+        virtual ~IsotrackTreesAnalysis();
+        virtual Int_t    Cut(Long64_t entry);
+        virtual void    GetEntry(Long64_t entry);
+        virtual Long64_t LoadTree(Long64_t entry);
+        virtual void     Init();
+        virtual void     Loop();
+        virtual Bool_t   Notify();
+        virtual void     Show(Long64_t entry = -1);
+
+        void processEvent();
+        void processTrack(int id);
+        bool basicEventSelection();
+        bool basicTrackSelection(int id);
+        bool truthIsolatedTrackSelection(int id);
+
+        MatchedClusterContainer getMatchedClusters(int id, caloType type, float dRThreshold);
+        MatchedClusterContainer getMatchedTowers(int id, caloType type, float dRThreshold);
+
+        // Modules
+        void initTrackResolutionModule();
+        void trackResolutionModule(int id, float totalEnergy);
+
+        void initEOverPModule();
+        void eOverPModule(int id, float totalEnergy, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
+
+        void trackRatesModule();
 };
 
 #endif
 
 #ifdef IsotrackTreesAnalysis_cxx
-IsotrackTreesAnalysis::IsotrackTreesAnalysis()
+IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, bool useTruthInfo, bool useTowerInfo, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy) :
+  USE_TRUTH_INFO(useTruthInfo),
+  USE_TOWER_INFO(useTowerInfo),
+  CENTRALITY_CUT(centralityCut),
+  D0_CUT(d0Cut),
+  Z0_CUT(z0Cut),
+  PT_CUT(ptCut),
+  MATCHED_PT_CUT(matchedPtCut),
+  MATCHED_DR_CUT(matchedDrCut),
+  MATCHED_NEUTRAL_TRUTH_PT_CUT(matchedNeutralTruthPtCut),
+  MATCHED_NEUTRAL_TRUTH_ETA_CUT(matchedNeutralTruthEtaCut),
+  MATCHED_NEUTRAL_TRUTH_DR_CUT(matchedNeutralTruthDrCut),
+  CEMC_MATCHING_DR_CUT(cemcMatchingDrCut),
+  IHCAL_MATCHING_DR_CUT(ihcalMatchingDrCut),
+  OHCAL_MATCHING_DR_CUT(ohcalMatchingDrCut),
+  CEMC_MIP_ENERGY(cemcMipEnergy),
+  IHCAL_MIP_ENERGY(ihcalMipEnergy)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
-  std::ifstream infile("../data/truthtestfilelist.txt");
+  std::ifstream infile(inputFilename);
   TString filename;
 
   fChainTracks      = new TChain("tracktree");

@@ -29,12 +29,11 @@ struct MatchedClusterContainer{
     }
 
     // return total energy of all clusters in the cluster within a delta_r cone 
-    float getTotalEnergy(float CLUSTER_DR_CUT) {
-        std::vector<float> e_temp;
-        if (!e_temp.empty()) e_temp.clear();
+    float getTotalEnergy(float clusterDr) {
+        float e_temp = 0.0;
         for (int j = 0; j < dR.size(); j++) {
-            if (dR[j] < CLUSTER_DR_CUT) {e_temp.push_back(e[j]);}
+            if (dR[j] < clusterDr) {e_temp += e[j];}
         }
-        return std::accumulate(e_temp.begin(), e_temp.end(), 0.0); 
+        return e_temp;
     }
 };

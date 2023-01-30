@@ -1,5 +1,5 @@
 #pragma once
-#include "IsotrackTreesAnalysis.h"
+#include "../IsotrackTreesAnalysis.h"
 #include <TVector3.h>
 #include <TRandom3.h>
 #include <TH2F.h>
@@ -46,7 +46,6 @@ void IsotrackTreesAnalysis::initTrackResolutionModule(){
 void IsotrackTreesAnalysis::trackResolutionModule(int id, float totalEnergy){
 
     TVector3 track;
-    TRandom3* rand = new TRandom3(123);
 
     for(int i = 0; i < 5; i++){
         float ptRelativeSigma = ptResolution(m_tr_pt[id], DISTORTIONS[i], 1.0);
