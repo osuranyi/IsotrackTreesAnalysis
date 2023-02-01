@@ -18,6 +18,7 @@
 #include <TRandom3.h>
 #include <iostream>
 #include <fstream>
+#include <string> 
 
 // Header file for the classes stored in the TTree if any.
 
@@ -28,6 +29,8 @@ class IsotrackTreesAnalysis {
         // Input option variables //
         ////////////////////////////
        
+        std::string OUTPUT_FILENAME;
+
         bool USE_TOWER_INFO;
         bool USE_TRUTH_INFO;
 
@@ -352,7 +355,7 @@ class IsotrackTreesAnalysis {
 
     public:
 
-        IsotrackTreesAnalysis(std::string inputFilename, bool useTruthInfo, bool useTowerInfo, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy);
+        IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, bool useTruthInfo, bool useTowerInfo, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy);
         virtual ~IsotrackTreesAnalysis();
         virtual Int_t    Cut(Long64_t entry);
         virtual void    GetEntry(Long64_t entry);
@@ -384,7 +387,7 @@ class IsotrackTreesAnalysis {
 #endif
 
 #ifdef IsotrackTreesAnalysis_cxx
-IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, bool useTruthInfo, bool useTowerInfo, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy) :
+IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, bool useTruthInfo, bool useTowerInfo, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy) :
   USE_TRUTH_INFO(useTruthInfo),
   USE_TOWER_INFO(useTowerInfo),
   CENTRALITY_CUT(centralityCut),
@@ -402,6 +405,8 @@ IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, bool use
   CEMC_MIP_ENERGY(cemcMipEnergy),
   IHCAL_MIP_ENERGY(ihcalMipEnergy)
 {
+  OUTPUT_FILENAME = outputFilename;
+
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
   std::ifstream infile(inputFilename);

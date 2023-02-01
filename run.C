@@ -4,6 +4,7 @@
 int main(int argc, char **argv){
 
     std::string filename;
+    std::string output_filename = "test_output.root";
     
     // options
     int useTowerInfo = true;
@@ -41,6 +42,7 @@ int main(int argc, char **argv){
     desc.add_options()
         ("help", "produce help message")
         ("file", po::value<std::string>(&filename), "path to txt file containing list of ROOT files (required)")
+        ("out_file", po::value<std::string>(&output_filename), "filename for output of analysis")
         ("use_towers", po::value<int>(&useTowerInfo), "use towers instead of clusters, default = 1")
         ("use_truth", po::value<int>(&useTruthInfo), "use truth information, default = 1")
         ("centrality", po::value<float>(&centrality), "centrality cut, default = 20%")
@@ -50,7 +52,7 @@ int main(int argc, char **argv){
         ("matched_pt", po::value<float>(&matchedPt), "pT cut on matched tracks, default = 0.2 GeV")
         ("matched_dr", po::value<float>(&matchedDr), "dR cut for matched tracks, default = 0.4")
         ("neutral_pt", po::value<float>(&matchedNeutralTruthPt), "pT cut on matched neutral truth particles, default = 0.2 GeV")
-        ("neutral_eta", po::value<float>(&matchedNeutralTruthEta), "eta cut on matched neutral truth particles, default = 0.2 GeV")
+        ("neutral_eta", po::value<float>(&matchedNeutralTruthEta), "eta cut on matched neutral truth particles, default = abs(1.0)")
         ("neutral_dr", po::value<float>(&matchedNeutralTruthDr), "dR cut for matched neutral truth particles, default = 0.4")
         ("cemc_dr", po::value<float>(&cemcMatchingDr), "dR cut for track-calo matching in CEMC, default = 0.2")      
         ("ihcal_dr", po::value<float>(&ihcalMatchingDr), "dR cut for track-calo matching in IHCal, default = 0.2")      
@@ -75,7 +77,7 @@ int main(int argc, char **argv){
       return 2;
     }
 
-    IsotrackTreesAnalysis a(filename, useTowerInfo, useTruthInfo, centrality, d0, z0, pT, matchedPt, matchedDr, matchedNeutralTruthPt, matchedNeutralTruthEta, matchedNeutralTruthDr, cemcMatchingDr, ihcalMatchingDr, ohcalMatchingDr, cemcMipEnergy, ihcalMipEnergy);
+    IsotrackTreesAnalysis a(filename, output_filename, useTowerInfo, useTruthInfo, centrality, d0, z0, pT, matchedPt, matchedDr, matchedNeutralTruthPt, matchedNeutralTruthEta, matchedNeutralTruthDr, cemcMatchingDr, ihcalMatchingDr, ohcalMatchingDr, cemcMipEnergy, ihcalMipEnergy);
 
     a.Loop();
 

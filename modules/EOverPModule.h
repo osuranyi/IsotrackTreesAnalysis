@@ -10,7 +10,7 @@ void IsotrackTreesAnalysis::initEOverPModule() {
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 4; j++) {
       histEoverP[4*i+j] = new TH2F(TString::Format("ep_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"", 20,0,20,100,0.0,4.0);
-      histEoverPBkg[4*i+j] = new TH2F(TString::Format("epBkg_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,200,0,1);
+      histEoverPBkg[4*i+j] = new TH2F(TString::Format("epBkg_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,200,0,2);
       histECemcBkg[4*i+j] = new TH1F(TString::Format("cemc_ebkg_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"",400,0,20);
       histEIhcalBkg[4*i+j] = new TH1F(TString::Format("ihcal_ebkg_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"",400,0,20);
     }
@@ -25,7 +25,7 @@ void IsotrackTreesAnalysis::eOverPModule(int id, float totalEnergy, MatchedClust
     
   float R2CemcEnergy = cemcClusters.getTotalEnergy(0.2);
   float R2IhcalEnergy = ihcalClusters.getTotalEnergy(0.2);
-  float R2OhcalEnergy = ihcalClusters.getTotalEnergy(0.2);
+  float R2OhcalEnergy = ohcalClusters.getTotalEnergy(0.2);
 
   float centrality_array[] = {20,40,60,80,100};
 
@@ -39,7 +39,7 @@ void IsotrackTreesAnalysis::eOverPModule(int id, float totalEnergy, MatchedClust
     }
   }
  
-  if (R1CemcEnergy < CEMC_MIP_ENERGY && R1IhcalEnergy < IHCAL_MIP_ENERGY && R2OhcalEnergy/m_tr_p[id] > 0.4) {
+  if (R1CemcEnergy < CEMC_MIP_ENERGY && R1IhcalEnergy < IHCAL_MIP_ENERGY && R2OhcalEnergy/m_tr_p[id] > 0.6) {
 
     float R1Energy = R1CemcEnergy + R1IhcalEnergy;
     float R2Energy = R2CemcEnergy + R2IhcalEnergy;

@@ -6,6 +6,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <iostream>
+#include <string>
 
 #include "selections/BasicEventSelection.h"
 #include "selections/BasicTrackSelection.h"
@@ -22,14 +23,14 @@ void IsotrackTreesAnalysis::Loop(){
     ///////////////////////////////////////////////////
     // Initializations go here
 
-    TFile* outputFile = new TFile("test_output.root", "RECREATE");
+    TFile* outputFile = new TFile(OUTPUT_FILENAME.c_str(), "RECREATE");
 
     initTrackResolutionModule();
     initEOverPModule();
 
     ///////////////////////////////////////////////////
 
-    for(Long64_t jentry=0; jentry<nentries;jentry++) {
+    for(Long64_t jentry=0;jentry<nentries;jentry++) {
         LoadTree(jentry);
         GetEntry(jentry);
         processEvent();
