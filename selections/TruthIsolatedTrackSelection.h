@@ -12,7 +12,7 @@ bool IsotrackTreesAnalysis::truthIsolatedTrackSelection(int id) {
     TVector3 v1, v2;
     v1.SetPtEtaPhi(m_tr_pt[id], m_tr_eta[id], m_tr_phi[id]);
     for (int j = 0; j < m_g4; j++) {
-        if (neutral_pid.find(m_g4_pid[j]) == neutral_pid.end() || m_g4_pt[j] > MATCHED_NEUTRAL_TRUTH_PT_CUT || m_g4_eta[j] > MATCHED_NEUTRAL_TRUTH_ETA_CUT) { continue; }
+        if (neutral_pid.find(m_g4_pid[j]) == neutral_pid.end() || m_g4_pt[j] < MATCHED_NEUTRAL_TRUTH_PT_CUT || fabs(m_g4_eta[j]) > MATCHED_NEUTRAL_TRUTH_ETA_CUT) { continue; }
 
         v2.SetPtEtaPhi(m_g4_pt[j], m_g4_eta[j], m_g4_phi[j]);
 
