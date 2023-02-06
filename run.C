@@ -9,6 +9,8 @@ int main(int argc, char **argv){
     // options
     int useTowerInfo = true;
     int useTruthInfo = true;
+    int useCentrality = true;
+    int useParticleGun = false;
 
     // event cuts
     float centrality = 20.0; // %
@@ -42,9 +44,11 @@ int main(int argc, char **argv){
     desc.add_options()
         ("help", "produce help message")
         ("file", po::value<std::string>(&filename), "path to txt file containing list of ROOT files (required)")
-        ("out_file", po::value<std::string>(&output_filename), "filename for output of analysis")
+        ("out_file", po::value<std::string>(&output_filename), "filename for output of analysis, default = test_output.root")
         ("use_towers", po::value<int>(&useTowerInfo), "use towers instead of clusters, default = 1")
         ("use_truth", po::value<int>(&useTruthInfo), "use truth information, default = 1")
+        ("use_centrality", po::value<int>(&useCentrality), "use centrality information, default = 1")
+        ("use_particle_gun", po::value<int>(&useParticleGun),"analyze a particle gun run, default = 0")
         ("centrality", po::value<float>(&centrality), "centrality cut, default = 20%")
         ("d0", po::value<float>(&d0), "d0 cut, default = 0.15 m")
         ("z0", po::value<float>(&z0), "z0 cut, default = 0.15 m")
@@ -77,7 +81,7 @@ int main(int argc, char **argv){
       return 2;
     }
 
-    IsotrackTreesAnalysis a(filename, output_filename, useTowerInfo, useTruthInfo, centrality, d0, z0, pT, matchedPt, matchedDr, matchedNeutralTruthPt, matchedNeutralTruthEta, matchedNeutralTruthDr, cemcMatchingDr, ihcalMatchingDr, ohcalMatchingDr, cemcMipEnergy, ihcalMipEnergy);
+    IsotrackTreesAnalysis a(filename, output_filename, useTowerInfo, useTruthInfo, useCentrality, useParticleGun, centrality, d0, z0, pT, matchedPt, matchedDr, matchedNeutralTruthPt, matchedNeutralTruthEta, matchedNeutralTruthDr, cemcMatchingDr, ihcalMatchingDr, ohcalMatchingDr, cemcMipEnergy, ihcalMipEnergy);
 
     a.Loop();
 

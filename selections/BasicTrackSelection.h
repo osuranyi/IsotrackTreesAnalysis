@@ -10,7 +10,7 @@ bool IsotrackTreesAnalysis::basicTrackSelection(int id){
     float d0 = sqrt((m_tr_x[id]-m_vx[0])*(m_tr_x[id]-m_vx[0])+(m_tr_y[id]-m_vy[0])*(m_tr_y[id]-m_vy[0]));
     float z0 = fabs(m_tr_z[id]-m_vz[0]);
 
-    if(!(d0 < D0_CUT && z0 < Z0_CUT)){
+    if(!USE_PARTICLE_GUN && !(d0 < D0_CUT && z0 < Z0_CUT)){
         return false;
     }
 

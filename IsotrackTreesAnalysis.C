@@ -46,12 +46,12 @@ void IsotrackTreesAnalysis::Loop(){
 // Process an event
 void IsotrackTreesAnalysis::processEvent(){
 
-    if(basicEventSelection()){
+    if (!USE_CENTRALITY || (USE_CENTRALITY && basicEventSelection())) {
 
-        for(int i = 0; i < m_trkmult; i++){
-            if(basicTrackSelection(i)){
+        for (int i = 0; i < m_trkmult; i++){
+            if (basicTrackSelection(i)){
                 //std::cout << "pass track selection" << std::endl;
-                if(!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))) {
+                if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))) {
                     processTrack(i);
                 } 
             }
