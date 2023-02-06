@@ -16,6 +16,7 @@
 #include "modules/EOverPModule.h"
 #include "modules/TrackRatesModule.h"
 
+
 void IsotrackTreesAnalysis::Loop(){
     // Get the number of entries in the TChain
     long nentries = fChainTracks->GetEntries();
@@ -87,7 +88,7 @@ void IsotrackTreesAnalysis::processTrack(int id){
     // Analysis modules should be added here //
     ///////////////////////////////////////////
 
-    //trackResolutionModule(id, totalEnergy);
+    trackResolutionModule(id, totalEnergy);
     eOverPModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
 
 }
