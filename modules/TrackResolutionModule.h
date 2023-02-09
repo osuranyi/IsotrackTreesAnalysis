@@ -38,7 +38,7 @@ double ptResolution(double pt, int distortion, double scale){
 
 void IsotrackTreesAnalysis::initTrackResolutionModule(){
   for(int i = 0; i < 5; i++){
-    histEoverP_2D[i] = new TH2F("",";E/p;p_{T} [GeV]", 100,0.0,4.0, 19,1.0,20.0);
+    histEoverP_2D[i] = new TH2F(Form("trackresolution_e_over_p_2D_distortion%d",DISTORTIONS[i]),";E/p;p_{T} [GeV]", 100,0.0,4.0, 19,1.0,20.0);
   }
 }
 
