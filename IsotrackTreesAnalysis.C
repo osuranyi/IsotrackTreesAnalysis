@@ -15,6 +15,7 @@
 #include "modules/TrackResolutionModule.h"
 #include "modules/EOverPModule.h"
 #include "modules/TrackRatesModule.h"
+#include "modules/ChecksModule.h"
 
 
 void IsotrackTreesAnalysis::Loop(){
@@ -27,7 +28,9 @@ void IsotrackTreesAnalysis::Loop(){
     TFile* outputFile = new TFile(OUTPUT_FILENAME.c_str(), "RECREATE");
 
     initTrackResolutionModule();
+    initTrackRatesModule();
     initEOverPModule();
+    initChecksModule();
 
     ///////////////////////////////////////////////////
 
@@ -47,8 +50,7 @@ void IsotrackTreesAnalysis::Loop(){
 // Process an event
 void IsotrackTreesAnalysis::processEvent(){
 
-    if (!USE_CENTRALITY || (USE_CENTRALITY && basicEventSelection())) {
-
+    if (basicEventSelection()) {
         for (int i = 0; i < m_trkmult; i++){
             if (basicTrackSelection(i)){
                 //std::cout << "pass track selection" << std::endl;
@@ -89,7 +91,9 @@ void IsotrackTreesAnalysis::processTrack(int id){
     ///////////////////////////////////////////
 
     trackResolutionModule(id, totalEnergy);
+    trackRatesModule(id);
     eOverPModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
+    checksModule(cemcClusters, ihcalClusters, ohcalClusters);
 
 }
 

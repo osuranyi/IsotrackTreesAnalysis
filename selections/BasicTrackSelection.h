@@ -15,7 +15,7 @@ bool IsotrackTreesAnalysis::basicTrackSelection(int id){
     }
 
     // Track momentum cut
-    if(m_tr_pt[id] < PT_CUT){
+    if(m_tr_pt[id] < PT_CUT || fabs(m_tr_eta[id]) > 1.0){
         return false;
     }
 
