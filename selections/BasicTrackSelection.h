@@ -21,11 +21,11 @@ bool IsotrackTreesAnalysis::basicTrackSelection(int id){
 
     // Track isolation condition
     TVector3 v1, v2;
-    v1.SetPtEtaPhi(m_tr_pt[id], m_tr_eta[id], m_tr_phi[id]);
+    v1.SetPtEtaPhi(1.0, m_tr_cemc_eta[id], m_tr_cemc_phi[id]);
     for(int j = 0; j < m_trkmult; j++){
         if(id == j){ continue; }
 
-        v2.SetPtEtaPhi(m_tr_pt[j], m_tr_eta[j], m_tr_phi[j]);
+        v2.SetPtEtaPhi(1.0, m_tr_cemc_eta[j], m_tr_cemc_phi[j]);
 
         if(v2.Pt() > MATCHED_PT_CUT && v1.DeltaR(v2) < MATCHED_DR_CUT){
             return false;
