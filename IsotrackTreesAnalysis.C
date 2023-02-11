@@ -16,7 +16,7 @@
 #include "modules/EOverPModule.h"
 #include "modules/TrackRatesModule.h"
 #include "modules/ChecksModule.h"
-
+#include "modules/ZeroShowerEnergyModule.h"
 
 void IsotrackTreesAnalysis::Loop(){
     // Get the number of entries in the TChain
@@ -95,5 +95,7 @@ void IsotrackTreesAnalysis::processTrack(int id){
     eOverPModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
     checksModule(cemcClusters, ihcalClusters, ohcalClusters);
 
+    if(USE_TRUTH_INFO)
+      zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
 }
 

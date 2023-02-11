@@ -15,6 +15,7 @@
 #include <TFile.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TEfficiency.h>
 #include <TRandom3.h>
 #include <iostream>
 #include <fstream>
@@ -356,6 +357,8 @@ class IsotrackTreesAnalysis {
         TH1F* histTrackRate[8];
         TH1F* histTowerNumber[3];
         
+        TEfficiency* graphZeroShower;
+
         /////////////////////////////
         // Random number generator //
         /////////////////////////////
@@ -395,6 +398,10 @@ class IsotrackTreesAnalysis {
 
         void initChecksModule();
         void checksModule(MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
+
+        void initZeroShowerEnergyModule();
+        void zeroShowerEnergyModule(int id, float cemcEnergy, float ihcalEnergy, float ohcalEnergy);
+
 };
 
 #endif
