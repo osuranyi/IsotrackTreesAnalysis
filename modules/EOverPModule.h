@@ -12,7 +12,9 @@ void IsotrackTreesAnalysis::initEOverPModule() {
   histEoverP[0] = new TH2F("ep_cut","",20,0,20,200,0,10);
   histEoverPBkg[0] = new TH2F("epBkg","",20,0,20,2000,0,20);
 
-  /*
+  histEoverPRaw_NoEtaNoCent = new TH2F("ep_raw","",20,0,20,200,0,10);
+  histEoverPBkg_NoEtaNoCent = new TH2F("epBkg" ,"",20,0,20,200,0,10);
+
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 4; j++) {
 
@@ -21,7 +23,6 @@ void IsotrackTreesAnalysis::initEOverPModule() {
       histEoverPBkg[4*i+j] = new TH2F(TString::Format("epBkg_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,1000,0,5);
     }
   }
-  */
 }
 
 void IsotrackTreesAnalysis::eOverPModule(int id, float totalEnergy, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters){
@@ -35,6 +36,7 @@ void IsotrackTreesAnalysis::eOverPModule(int id, float totalEnergy, MatchedClust
   float R2OhcalEnergy = ohcalClusters.getTotalEnergy(0.2);
 
   float centrality_array[] = {20,40,60,80,100};
+
 
   histEoverPRaw[0]->Fill(m_tr_p[id], totalEnergy / m_tr_p[id]);
   /*
@@ -61,7 +63,10 @@ void IsotrackTreesAnalysis::eOverPModule(int id, float totalEnergy, MatchedClust
     histEoverP[0]->Fill(m_tr_p[id], totalEnergy / m_tr_p[id]);
     histEoverPBkg[0]->Fill(m_tr_p[id], (R2Energy - R1Energy) / m_tr_p[id]);
 
-    /*
+    // E/p background estimated from sideband method
+    // 4/3 is used to correct the are of the R1-R2 annulus to the are of the R2 circle
+    histEoverPBkg_NoEtaNoCent->Fill(m_tr_p[id], 4./3. * (R2Energy - R1Energy) / m_tr_p[id]);
+
     if (fabs(m_tr_cemc_eta[id]) < 0.5) { 
       for (int j = 1; j < 5; j++) {
         if (!USE_CENTRALITY || (centrality > centrality_array[j-1] && centrality < centrality_array[j])) {
@@ -77,6 +82,5 @@ void IsotrackTreesAnalysis::eOverPModule(int id, float totalEnergy, MatchedClust
         }
       }
     }
-    */
   }
 }

@@ -17,15 +17,19 @@
 #include "modules/EOverPModule.h"
 #include "modules/TrackRatesModule.h"
 #include "modules/ChecksModule.h"
+#include "modules/ZeroShowerEnergyModule.h"
 #include "modules/BackgroundCheckModule.h"
 
+#include "postprocess/BackgroundDeconvolution.h"
 
 void IsotrackTreesAnalysis::Loop(){
+    
     // Get the number of entries in the TChain
     long nentries = fChainTracks->GetEntries();
 
-    ///////////////////////////////////////////////////
-    // Initializations go here
+    /////////////////////////////
+    // Initializations go here //
+    /////////////////////////////
 
     TFile* outputFile = new TFile(OUTPUT_FILENAME.c_str(), "RECREATE");
 
@@ -33,10 +37,13 @@ void IsotrackTreesAnalysis::Loop(){
     initTrackRatesModule();
     initEOverPModule();
     initChecksModule();
+
+    initZeroShowerEnergyModule();
+    //initFFT();
     initBackgroundCheckModule();
 
     ///////////////////////////////////////////////////
-
+  
     for(Long64_t jentry=0;jentry<nentries;jentry++) {
         LoadTree(jentry);
         GetEntry(jentry);
@@ -45,6 +52,10 @@ void IsotrackTreesAnalysis::Loop(){
         if(jentry % 1000 == 0)
             std::cout << jentry << "/" << nentries << " have been processed" << std::endl;
     }
+
+    // Postprocess 
+    
+    backgroundDeconvolution();
 
     // Saving output file
     outputFile->Write();
@@ -102,5 +113,6 @@ void IsotrackTreesAnalysis::processTrack(int id){
     checksModule(cemcClusters, ihcalClusters, ohcalClusters);
     backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
 
+    //if(USE_TRUTH_INFO)
+    zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
 }
-

@@ -15,6 +15,7 @@
 #include <TFile.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TEfficiency.h>
 #include <TRandom3.h>
 #include <iostream>
 #include <fstream>
@@ -405,6 +406,13 @@ class IsotrackTreesAnalysis {
         TH1F* histTrackRate[8];
         // ChecksModule
         TH1F* histTowerNumber[3];
+
+        TH2F* histEoverPRaw_NoEtaNoCent;
+        TH2F* histEoverPBkg_NoEtaNoCent;
+        TH2F* histEoverPBkgDec;
+
+        TEfficiency* graphZeroShower;
+   
         // BackgroundCheckModule
         TH2F* histEoverPNN[8];
         TH2F* histEoverPNNtest[8];
@@ -478,8 +486,16 @@ class IsotrackTreesAnalysis {
         void initChecksModule();
         void checksModule(MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
 
+        void initZeroShowerEnergyModule();
+        void zeroShowerEnergyModule(int id, float cemcEnergy, float ihcalEnergy, float ohcalEnergy);
+
         void initBackgroundCheckModule();
         void backgroundCheckModule(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
+
+        // Postprocessing
+        //void initFFT();
+        void backgroundDeconvolution();
+        std::vector<double> deconvolve(std::vector<double> m, std::vector<double> b);
 };
 
 #endif
