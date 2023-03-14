@@ -37,7 +37,7 @@ int main(int argc, char **argv){
     // MIP cuts
     float cemcMipEnergy = 0.35; // GeV
     float ihcalMipEnergy = 0.1; // GeV
-
+    
     namespace po = boost::program_options;
 
     po::options_description desc("Allowed options");
@@ -80,7 +80,7 @@ int main(int argc, char **argv){
       std::cout << desc << std::endl;
       return 2;
     }
-
+    
     IsotrackTreesAnalysis a(filename, output_filename, useTowerInfo, useTruthInfo, useCentrality, useParticleGun, centrality, d0, z0, pT, matchedPt, matchedDr, matchedNeutralTruthPt, matchedNeutralTruthEta, matchedNeutralTruthDr, cemcMatchingDr, ihcalMatchingDr, ohcalMatchingDr, cemcMipEnergy, ihcalMipEnergy);
 
     a.Loop();

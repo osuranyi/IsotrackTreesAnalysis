@@ -74,6 +74,7 @@ class IsotrackTreesAnalysis {
         TChain          *fChainHepMC;
         TChain          *fChainG4;
         TChain          *fChainCentrality;
+        TChain          *fChainAddTruth;
 
         Int_t           fCurrent; //!current Tree number in a TChain
 
@@ -117,6 +118,7 @@ class IsotrackTreesAnalysis {
         Float_t         m_tr_truth_pt[2000];   //[m_trkmult]
         Float_t         m_tr_truth_eta[2000];   //[m_trkmult]
         Float_t         m_tr_truth_phi[2000];   //[m_trkmult]
+        Int_t           m_tr_truth_track_id[2000];
 
         // List of branches
         TBranch        *b_m_trkmult;   //!
@@ -152,6 +154,7 @@ class IsotrackTreesAnalysis {
         TBranch        *b_m_tr_truth_pt;   //!
         TBranch        *b_m_tr_truth_eta;   //!
         TBranch        *b_m_tr_truth_phi;   //!
+        TBranch        *b_m_tr_truth_track_id;
 
         /////////////////////////////////////////
         // Cluster tree variables and branches //
@@ -316,6 +319,8 @@ class IsotrackTreesAnalysis {
         Float_t         m_g4_pt[20000];   //[m_g4]
         Float_t         m_g4_eta[20000];   //[m_g4]
         Float_t         m_g4_phi[20000];   //[m_g4]
+        Int_t           m_g4_track_id[20000];
+        Int_t           m_g4_parent_id[20000];
 
         // List of branches
         TBranch        *b_m_g4;   //!
@@ -324,6 +329,8 @@ class IsotrackTreesAnalysis {
         TBranch        *b_m_g4_pt;   //!
         TBranch        *b_m_g4_eta;   //!
         TBranch        *b_m_g4_phi;   //!
+        TBranch        *b_m_g4_track_id;
+        TBranch        *b_m_g4_parent_id;
 
 
         ///////////////////////////////////////
@@ -337,24 +344,67 @@ class IsotrackTreesAnalysis {
         TBranch        *b_centrality;   //!
 
 
+        /////////////////////////////////////////////
+        // Additional Truth variables and branches //
+        /////////////////////////////////////////////
+
+        Int_t           n_child;
+        Int_t           child_pid[100000];
+        Int_t           child_parent_id[100000];
+        Int_t           child_vertex_id[100000];
+        Float_t         child_px[100000];
+        Float_t         child_py[100000];
+        Float_t         child_pz[100000];
+        Float_t         child_energy[100000];
+        Int_t           n_vertex;
+        Int_t           vertex_id[100000];
+        Float_t         vertex_x[100000];
+        Float_t         vertex_y[100000];
+        Float_t         vertex_z[100000];
+        Int_t           _nBH;
+        Float_t         BH_e[20000];
+        Float_t         BH_px[20000];
+        Float_t         BH_py[20000];
+        Float_t         BH_pz[20000];
+        Int_t           BH_track_id[20000];
+
+        TBranch         *b_n_child;
+        TBranch         *b_child_pid;
+        TBranch         *b_child_parent_id;
+        TBranch         *b_child_vertex_id;
+        TBranch         *b_child_px;
+        TBranch         *b_child_py;
+        TBranch         *b_child_pz;
+        TBranch         *b_child_energy;
+        TBranch         *b_n_vertex;
+        TBranch         *b_vertex_id;
+        TBranch         *b_vertex_x;
+        TBranch         *b_vertex_y;
+        TBranch         *b_vertex_z;
+        TBranch         *b__nBH;
+        TBranch         *b_BH_e;
+        TBranch         *b_BH_px;
+        TBranch         *b_BH_py;
+        TBranch         *b_BH_pz;
+        TBranch         *b_BH_track_id;
+
+
         enum caloType{cemc=0, ihcal=1, ohcal=2};
 
         ////////////////
         // Histograms //
         ////////////////
 
+        // TrackResolutionModule
         TH2F* histEoverP_2D[5];
+        // EOverPModule
         TH2F* histEoverP[8];
         TH2F* histEoverPRaw[8];
         TH2F* histEoverPBkg[8];
-        TH1F* histECemcBkg[8];
-        TH1F* histEIhcalBkg[8];
-        TH2F* histCemcVOhcalRaw;
-        TH2F* histCemcVOhcal;
-        TH2F* histEPvEPBkg;
-        TH2F* histBkgRatiovP;
+        // TrackRatesModule
         TH1F* histTrackTotal;
         TH1F* histTrackRate[8];
+        // ChecksModule
         TH1F* histTowerNumber[3];
 
         TH2F* histEoverPRaw_NoEtaNoCent;
@@ -363,6 +413,37 @@ class IsotrackTreesAnalysis {
 
         TEfficiency* graphZeroShower;
    
+        // BackgroundCheckModule
+        TH2F* histEoverPNN[8];
+        TH2F* histEoverPNNtest[8];
+        TH2F* histEoverPNEM[8];
+        TH2F* histEoverPNEMtest[8];
+        TH2F* histEoverPNH[8];
+        TH2F* histEoverPNHtest[8];
+        TH2F* histENN[8];
+        TH2F* histENNtest[8];
+        TH2F* histENEM[8];
+        TH2F* histENEMtest[8];
+        TH2F* histENH[8];
+        TH2F* histENHtest[8];
+        TH2F* histCemcE[8];
+        TH2F* histIhcalE[8];
+        TH2F* histBkgE[8];
+        TH2F* histCemcENEM[8];
+        TH2F* histIhcalENEM[8];
+        TH2F* histBkgENEM[8];
+        TH2F* histCemcENH[8];
+        TH2F* histIhcalENH[8];
+        TH2F* histBkgENH[8];
+        TH2F* histBkgEoverPNN[8];
+        TH2F* histBkgEoverPNEM[8];
+        TH2F* histBkgEoverPNH[8];
+        TH1F* histNNN[8];
+        TH1F* histNNEM[8];
+        TH1F* histNNH[8];
+        TH1F* histNNEMraw[8];
+        TH1F* histNNHraw[8];
+        
         /////////////////////////////
         // Random number generator //
         /////////////////////////////
@@ -386,9 +467,11 @@ class IsotrackTreesAnalysis {
         bool basicEventSelection();
         bool basicTrackSelection(int id);
         bool truthIsolatedTrackSelection(int id);
+        int mipShowerClassifier(int id);
 
         MatchedClusterContainer getMatchedClusters(int id, caloType type, float dRThreshold);
         MatchedClusterContainer getMatchedTowers(int id, caloType type, float dRThreshold);
+        MatchedClusterContainer getMatchedSimTowers(int id, caloType type, float dRThreshold);
 
         // Modules
         void initTrackResolutionModule();
@@ -405,6 +488,9 @@ class IsotrackTreesAnalysis {
 
         void initZeroShowerEnergyModule();
         void zeroShowerEnergyModule(int id, float cemcEnergy, float ihcalEnergy, float ohcalEnergy);
+
+        void initBackgroundCheckModule();
+        void backgroundCheckModule(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
 
         // Postprocessing
         //void initFFT();
@@ -449,6 +535,7 @@ IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::str
   fChainHepMC       = new TChain("hepmctree");
   fChainG4          = new TChain("g4tree");
   fChainCentrality  = new TChain("centraltree");
+  fChainAddTruth    = new TChain("addtruthtree");
 
   while(infile >> filename){
     fChainTracks->Add(filename);
@@ -458,6 +545,7 @@ IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::str
     fChainHepMC->Add(filename);
     fChainG4->Add(filename);
     fChainCentrality->Add(filename);
+    fChainAddTruth->Add(filename);
   }
 
   Init();
@@ -472,6 +560,7 @@ IsotrackTreesAnalysis::~IsotrackTreesAnalysis()
   delete fChainHepMC;
   delete fChainG4;
   delete fChainCentrality;
+  delete fChainAddTruth;
 }
 
 void IsotrackTreesAnalysis::GetEntry(Long64_t entry)
@@ -491,6 +580,8 @@ void IsotrackTreesAnalysis::GetEntry(Long64_t entry)
      fChainG4->GetEntry(entry);
    if(fChainCentrality)
      fChainCentrality->GetEntry(entry);
+   if(fChainAddTruth)
+     fChainAddTruth->GetEntry(entry);
 }
 Long64_t IsotrackTreesAnalysis::LoadTree(Long64_t entry)
 {
@@ -554,6 +645,7 @@ void IsotrackTreesAnalysis::Init()
    fChainTracks->SetBranchAddress("m_tr_truth_pt", m_tr_truth_pt, &b_m_tr_truth_pt);
    fChainTracks->SetBranchAddress("m_tr_truth_eta", m_tr_truth_eta, &b_m_tr_truth_eta);
    fChainTracks->SetBranchAddress("m_tr_truth_phi", m_tr_truth_phi, &b_m_tr_truth_phi);
+   fChainTracks->SetBranchAddress("m_tr_truth_track_id", m_tr_truth_track_id, &b_m_tr_truth_track_id);
 
    fChainClusters->SetBranchAddress("m_clsmult_cemc", &m_clsmult_cemc, &b_m_clsmult_cemc);
    fChainClusters->SetBranchAddress("m_cl_cemc_e", m_cl_cemc_e, &b_m_cl_cemc_e);
@@ -625,8 +717,30 @@ void IsotrackTreesAnalysis::Init()
    fChainG4->SetBranchAddress("m_g4_pt", m_g4_pt, &b_m_g4_pt);
    fChainG4->SetBranchAddress("m_g4_eta", m_g4_eta, &b_m_g4_eta);
    fChainG4->SetBranchAddress("m_g4_phi", m_g4_phi, &b_m_g4_phi);
+   fChainG4->SetBranchAddress("m_g4_track_id", m_g4_track_id, &b_m_g4_track_id);
+   fChainG4->SetBranchAddress("m_g4_parent_id", m_g4_parent_id, &b_m_g4_parent_id);
 
    fChainCentrality->SetBranchAddress("centrality", &centrality, &b_centrality);
+
+   fChainAddTruth->SetBranchAddress("n_child", &n_child, &b_n_child);
+   fChainAddTruth->SetBranchAddress("child_pid", child_pid, &b_child_pid);
+   fChainAddTruth->SetBranchAddress("child_parent_id", child_parent_id, &b_child_parent_id);
+   fChainAddTruth->SetBranchAddress("child_vertex_id", child_vertex_id, &b_child_vertex_id);
+   fChainAddTruth->SetBranchAddress("child_px", child_px, &b_child_px);
+   fChainAddTruth->SetBranchAddress("child_py", child_py, &b_child_py);
+   fChainAddTruth->SetBranchAddress("child_pz", child_pz, &b_child_pz);
+   fChainAddTruth->SetBranchAddress("child_energy", child_energy, &b_child_energy);
+   fChainAddTruth->SetBranchAddress("n_vertex", &n_vertex, &b_n_vertex);
+   fChainAddTruth->SetBranchAddress("vertex_id", vertex_id, &b_vertex_id);
+   fChainAddTruth->SetBranchAddress("vertex_x", vertex_x, &b_vertex_x);
+   fChainAddTruth->SetBranchAddress("vertex_y", vertex_y, &b_vertex_y);
+   fChainAddTruth->SetBranchAddress("vertex_z", vertex_z, &b_vertex_z);
+   fChainAddTruth->SetBranchAddress("_nBH", &_nBH, &b__nBH);
+   fChainAddTruth->SetBranchAddress("BH_e", BH_e, &b_BH_e);
+   fChainAddTruth->SetBranchAddress("BH_px", BH_px, &b_BH_px);
+   fChainAddTruth->SetBranchAddress("BH_py", BH_py, &b_BH_py);
+   fChainAddTruth->SetBranchAddress("BH_pz", BH_pz, &b_BH_pz);
+   fChainAddTruth->SetBranchAddress("BH_track_id", BH_track_id, &b_BH_track_id);
 
 
    Notify();

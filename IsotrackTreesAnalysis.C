@@ -11,12 +11,14 @@
 #include "selections/BasicEventSelection.h"
 #include "selections/BasicTrackSelection.h"
 #include "selections/TruthIsolatedTrackSelection.h"
+#include "selections/MipShowerClassifier.h"
 
 #include "modules/TrackResolutionModule.h"
 #include "modules/EOverPModule.h"
 #include "modules/TrackRatesModule.h"
 #include "modules/ChecksModule.h"
 #include "modules/ZeroShowerEnergyModule.h"
+#include "modules/BackgroundCheckModule.h"
 
 #include "postprocess/BackgroundDeconvolution.h"
 
@@ -31,13 +33,14 @@ void IsotrackTreesAnalysis::Loop(){
 
     TFile* outputFile = new TFile(OUTPUT_FILENAME.c_str(), "RECREATE");
 
-    initTrackResolutionModule();
+    //initTrackResolutionModule();
     initTrackRatesModule();
     initEOverPModule();
     initChecksModule();
+
     initZeroShowerEnergyModule();
-   
     //initFFT();
+    initBackgroundCheckModule();
 
     ///////////////////////////////////////////////////
   
@@ -64,9 +67,12 @@ void IsotrackTreesAnalysis::processEvent(){
     if (basicEventSelection()) {
         for (int i = 0; i < m_trkmult; i++){
             if (basicTrackSelection(i)){
+                assert(m_tr_cemc_eta[i] > -98 && m_tr_cemc_phi[i] > -98 && fabs(m_tr_cemc_eta[i]) <= 1.0);
                 //std::cout << "pass track selection" << std::endl;
                 if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))) {
-                    processTrack(i);
+                    if (!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1 && mipShowerClassifier(i) > 3)) {
+                        processTrack(i);
+                    }
                 } 
             }
         }
@@ -81,9 +87,9 @@ void IsotrackTreesAnalysis::processTrack(int id){
 
     // Calculate the ids of all matched clusters
     if (USE_TOWER_INFO) {
-        cemcClusters  = getMatchedTowers(id,cemc,CEMC_MATCHING_DR_CUT);
-        ihcalClusters = getMatchedTowers(id,ihcal,IHCAL_MATCHING_DR_CUT);
-        ohcalClusters = getMatchedTowers(id,ohcal,OHCAL_MATCHING_DR_CUT);
+        cemcClusters  = getMatchedSimTowers(id,cemc,CEMC_MATCHING_DR_CUT);
+        ihcalClusters = getMatchedSimTowers(id,ihcal,IHCAL_MATCHING_DR_CUT);
+        ohcalClusters = getMatchedSimTowers(id,ohcal,OHCAL_MATCHING_DR_CUT);
     } else {
         cemcClusters  = getMatchedClusters(id,cemc,CEMC_MATCHING_DR_CUT);
         ihcalClusters = getMatchedClusters(id,ihcal,IHCAL_MATCHING_DR_CUT);
@@ -101,10 +107,11 @@ void IsotrackTreesAnalysis::processTrack(int id){
     // Analysis modules should be added here //
     ///////////////////////////////////////////
 
-    trackResolutionModule(id, totalEnergy);
+    //trackResolutionModule(id, totalEnergy);
     trackRatesModule(id);
     eOverPModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
     checksModule(cemcClusters, ihcalClusters, ohcalClusters);
+    backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
 
     //if(USE_TRUTH_INFO)
     zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
