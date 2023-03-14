@@ -14,14 +14,19 @@ bool IsotrackTreesAnalysis::basicTrackSelection(int id){
         return false;
     }
 
+    if (m_tr_cemc_eta[id] < -998 || m_tr_cemc_phi[id] < -998) {
+        return false;
+    }
+    
     // Track momentum cut
-    if(m_tr_pt[id] < PT_CUT || fabs(m_tr_eta[id]) > 1.0){
+    if(m_tr_pt[id] < PT_CUT || fabs(m_tr_cemc_eta[id]) > 1.0){
         return false;
     }
 
     // Track isolation condition
     TVector3 v1, v2;
     v1.SetPtEtaPhi(1.0, m_tr_cemc_eta[id], m_tr_cemc_phi[id]);
+
     for(int j = 0; j < m_trkmult; j++){
         if(id == j){ continue; }
 
