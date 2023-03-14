@@ -41,7 +41,7 @@ MatchedClusterContainer IsotrackTreesAnalysis::getMatchedClusters(int id, caloTy
 
         case ohcal:
             // Check if OHCal is reached
-            for(int i = 0; i < m_clsmult_ihcal; i++){
+            for(int i = 0; i < m_clsmult_ohcal; i++){
                 if(m_tr_ohcal_eta[id] > -998){
                     track.SetPtEtaPhi(1.0, m_tr_ohcal_eta[id], m_tr_ohcal_phi[id]); // for the track we only need the direction!
                     cluster.SetPtEtaPhi(m_cl_ohcal_e[i]/cosh(m_cl_ohcal_eta[i]), m_cl_ohcal_eta[i], m_cl_ohcal_phi[i]);

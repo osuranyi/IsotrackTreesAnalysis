@@ -356,9 +356,13 @@ class IsotrackTreesAnalysis {
         TH1F* histTrackTotal;
         TH1F* histTrackRate[8];
         TH1F* histTowerNumber[3];
-        
-        TEfficiency* graphZeroShower;
 
+        TH2F* histEoverPRaw_NoEtaNoCent;
+        TH2F* histEoverPBkg_NoEtaNoCent;
+        TH2F* histEoverPBkgDec;
+
+        TEfficiency* graphZeroShower;
+   
         /////////////////////////////
         // Random number generator //
         /////////////////////////////
@@ -402,6 +406,10 @@ class IsotrackTreesAnalysis {
         void initZeroShowerEnergyModule();
         void zeroShowerEnergyModule(int id, float cemcEnergy, float ihcalEnergy, float ohcalEnergy);
 
+        // Postprocessing
+        //void initFFT();
+        void backgroundDeconvolution();
+        std::vector<double> deconvolve(std::vector<double> m, std::vector<double> b);
 };
 
 #endif

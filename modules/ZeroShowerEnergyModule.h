@@ -6,6 +6,6 @@ void IsotrackTreesAnalysis::initZeroShowerEnergyModule(){
 }
 
 void IsotrackTreesAnalysis::zeroShowerEnergyModule(int id, float cemcEnergy, float ihcalEnergy, float ohcalEnergy){
-    graphZeroShower->Fill(m_tr_p[id], (cemcEnergy < 0.1) && (ihcalEnergy < 0.1) && (ohcalEnergy < 0.1) );
-
+    //std::cout << m_tr_p[id] << "\t" << (int)((cemcEnergy < 0.1) && (ihcalEnergy < 0.1) && (ohcalEnergy < 0.1)) << std::endl;
+    graphZeroShower->Fill((cemcEnergy < 0.1) && (ihcalEnergy < 0.1) && (ohcalEnergy < 0.1), m_tr_p[id]);
 }
