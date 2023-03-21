@@ -7,10 +7,10 @@ int main(int argc, char **argv){
     std::string output_filename = "test_output.root";
     
     // options
-    int useTowerInfo = true;
-    int useTruthInfo = true;
-    int useCentrality = true;
-    int useParticleGun = false;
+    int useTowerInfo = 2;
+    int useTruthInfo = 1;
+    int useCentrality = 1;
+    int useParticleGun = 0;
 
     // event cuts
     float centrality = 20.0; // %
@@ -35,6 +35,7 @@ int main(int argc, char **argv){
     float ohcalMatchingDr = 0.2;
 
     // MIP cuts
+    int showerStart = 1;
     float cemcMipEnergy = 0.35; // GeV
     float ihcalMipEnergy = 0.1; // GeV
     
@@ -45,7 +46,7 @@ int main(int argc, char **argv){
         ("help", "produce help message")
         ("file", po::value<std::string>(&filename), "path to txt file containing list of ROOT files (required)")
         ("out_file", po::value<std::string>(&output_filename), "filename for output of analysis, default = test_output.root")
-        ("use_towers", po::value<int>(&useTowerInfo), "use towers instead of clusters, default = 1")
+        ("use_towers", po::value<int>(&useTowerInfo), "use towers instead of clusters, 0 - use clusters, 1 - use towers, 2 - use simtowers (default)")
         ("use_truth", po::value<int>(&useTruthInfo), "use truth information, default = 1")
         ("use_centrality", po::value<int>(&useCentrality), "use centrality information, default = 1")
         ("use_particle_gun", po::value<int>(&useParticleGun),"analyze a particle gun run, default = 0")
@@ -61,8 +62,10 @@ int main(int argc, char **argv){
         ("cemc_dr", po::value<float>(&cemcMatchingDr), "dR cut for track-calo matching in CEMC, default = 0.2")      
         ("ihcal_dr", po::value<float>(&ihcalMatchingDr), "dR cut for track-calo matching in IHCal, default = 0.2")      
         ("ohcal_dr", po::value<float>(&ohcalMatchingDr), "dR cut for track-calo matching in OHCal, default = 0.2")      
+
+        ("shower_start", po::value<int>(&showerStart), "Shower start: 0 - EMCal, 1 - IHCal (default), 2 - OHCal")
         ("cemc_mip_energy", po::value<float>(&cemcMipEnergy), "MIP energy cut for CEMC, default = 0.35 GeV")
-        ("ihcal_mip_energy", po::value<float>(&ihcalMipEnergy), "MIP energy cut for IHCal, default = 0.1 GeV")    
+        ("ihcal_mip_energy", po::value<float>(&ihcalMipEnergy), "MIP energy cut for IHCal, default = 0.1 GeV")
         ;
 
     po::variables_map vm;
@@ -81,7 +84,7 @@ int main(int argc, char **argv){
       return 2;
     }
     
-    IsotrackTreesAnalysis a(filename, output_filename, useTowerInfo, useTruthInfo, useCentrality, useParticleGun, centrality, d0, z0, pT, matchedPt, matchedDr, matchedNeutralTruthPt, matchedNeutralTruthEta, matchedNeutralTruthDr, cemcMatchingDr, ihcalMatchingDr, ohcalMatchingDr, cemcMipEnergy, ihcalMipEnergy);
+    IsotrackTreesAnalysis a(filename, output_filename, useTowerInfo, useTruthInfo, useCentrality, useParticleGun, centrality, d0, z0, pT, matchedPt, matchedDr, matchedNeutralTruthPt, matchedNeutralTruthEta, matchedNeutralTruthDr, cemcMatchingDr, ihcalMatchingDr, ohcalMatchingDr, cemcMipEnergy, ihcalMipEnergy, showerStart);
 
     a.Loop();
 
