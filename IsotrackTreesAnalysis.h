@@ -575,7 +575,7 @@ IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::str
   fChainHepMC       = new TChain("hepmctree");
   fChainG4          = new TChain("g4tree");
   fChainCentrality  = new TChain("centraltree");
-  fChainAddTruth    = new TChain("addtruthtree");
+  if (USE_PARTICLE_GUN) fChainAddTruth    = new TChain("addtruthtree");
 
   while(infile >> filename){
     fChainTracks->Add(filename);
@@ -585,7 +585,7 @@ IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::str
     fChainHepMC->Add(filename);
     fChainG4->Add(filename);
     fChainCentrality->Add(filename);
-    fChainAddTruth->Add(filename);
+    if (USE_PARTICLE_GUN) fChainAddTruth->Add(filename);
   }
 
   Init();
@@ -600,7 +600,7 @@ IsotrackTreesAnalysis::~IsotrackTreesAnalysis()
   delete fChainHepMC;
   delete fChainG4;
   delete fChainCentrality;
-  delete fChainAddTruth;
+  if (USE_PARTICLE_GUN) delete fChainAddTruth;
 }
 
 void IsotrackTreesAnalysis::GetEntry(Long64_t entry)
@@ -620,7 +620,7 @@ void IsotrackTreesAnalysis::GetEntry(Long64_t entry)
      fChainG4->GetEntry(entry);
    if(fChainCentrality)
      fChainCentrality->GetEntry(entry);
-   if(fChainAddTruth)
+   if(USE_PARTICLE_GUN && fChainAddTruth)
      fChainAddTruth->GetEntry(entry);
 }
 Long64_t IsotrackTreesAnalysis::LoadTree(Long64_t entry)
@@ -762,26 +762,27 @@ void IsotrackTreesAnalysis::Init()
 
    fChainCentrality->SetBranchAddress("centrality", &centrality, &b_centrality);
 
-   fChainAddTruth->SetBranchAddress("n_child", &n_child, &b_n_child);
-   fChainAddTruth->SetBranchAddress("child_pid", child_pid, &b_child_pid);
-   fChainAddTruth->SetBranchAddress("child_parent_id", child_parent_id, &b_child_parent_id);
-   fChainAddTruth->SetBranchAddress("child_vertex_id", child_vertex_id, &b_child_vertex_id);
-   fChainAddTruth->SetBranchAddress("child_px", child_px, &b_child_px);
-   fChainAddTruth->SetBranchAddress("child_py", child_py, &b_child_py);
-   fChainAddTruth->SetBranchAddress("child_pz", child_pz, &b_child_pz);
-   fChainAddTruth->SetBranchAddress("child_energy", child_energy, &b_child_energy);
-   fChainAddTruth->SetBranchAddress("n_vertex", &n_vertex, &b_n_vertex);
-   fChainAddTruth->SetBranchAddress("vertex_id", vertex_id, &b_vertex_id);
-   fChainAddTruth->SetBranchAddress("vertex_x", vertex_x, &b_vertex_x);
-   fChainAddTruth->SetBranchAddress("vertex_y", vertex_y, &b_vertex_y);
-   fChainAddTruth->SetBranchAddress("vertex_z", vertex_z, &b_vertex_z);
-   fChainAddTruth->SetBranchAddress("_nBH", &_nBH, &b__nBH);
-   fChainAddTruth->SetBranchAddress("BH_e", BH_e, &b_BH_e);
-   fChainAddTruth->SetBranchAddress("BH_px", BH_px, &b_BH_px);
-   fChainAddTruth->SetBranchAddress("BH_py", BH_py, &b_BH_py);
-   fChainAddTruth->SetBranchAddress("BH_pz", BH_pz, &b_BH_pz);
-   fChainAddTruth->SetBranchAddress("BH_track_id", BH_track_id, &b_BH_track_id);
-
+   if (USE_PARTICLE_GUN) {
+        fChainAddTruth->SetBranchAddress("n_child", &n_child, &b_n_child);
+       fChainAddTruth->SetBranchAddress("child_pid", child_pid, &b_child_pid);
+       fChainAddTruth->SetBranchAddress("child_parent_id", child_parent_id, &b_child_parent_id);
+       fChainAddTruth->SetBranchAddress("child_vertex_id", child_vertex_id, &b_child_vertex_id);
+       fChainAddTruth->SetBranchAddress("child_px", child_px, &b_child_px);
+       fChainAddTruth->SetBranchAddress("child_py", child_py, &b_child_py);
+       fChainAddTruth->SetBranchAddress("child_pz", child_pz, &b_child_pz);
+       fChainAddTruth->SetBranchAddress("child_energy", child_energy, &b_child_energy);
+       fChainAddTruth->SetBranchAddress("n_vertex", &n_vertex, &b_n_vertex);
+       fChainAddTruth->SetBranchAddress("vertex_id", vertex_id, &b_vertex_id);
+       fChainAddTruth->SetBranchAddress("vertex_x", vertex_x, &b_vertex_x);
+       fChainAddTruth->SetBranchAddress("vertex_y", vertex_y, &b_vertex_y);
+       fChainAddTruth->SetBranchAddress("vertex_z", vertex_z, &b_vertex_z);
+       fChainAddTruth->SetBranchAddress("_nBH", &_nBH, &b__nBH);
+       fChainAddTruth->SetBranchAddress("BH_e", BH_e, &b_BH_e);
+       fChainAddTruth->SetBranchAddress("BH_px", BH_px, &b_BH_px);
+       fChainAddTruth->SetBranchAddress("BH_py", BH_py, &b_BH_py);
+       fChainAddTruth->SetBranchAddress("BH_pz", BH_pz, &b_BH_pz);
+       fChainAddTruth->SetBranchAddress("BH_track_id", BH_track_id, &b_BH_track_id);
+   }
 
    Notify();
 }
