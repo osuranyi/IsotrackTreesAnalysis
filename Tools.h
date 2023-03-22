@@ -148,7 +148,7 @@ MatchedClusterContainer IsotrackTreesAnalysis::getMatchedSimTowers(int id, caloT
             for(int i = 0; i < m_simtwrmult_ihcal; i++){ 
                 if(m_tr_ihcal_eta[id] > -998){
                     // FIXME
-                    track.SetPtEtaPhi(1.0, m_tr_ihcal_eta[id], 0.75*m_tr_ihcal_phi[id]+0.25*m_tr_ohcal_phi[id]); // for the track we only need the direction!
+                    track.SetPtEtaPhi(1.0, m_tr_ihcal_eta[id], m_tr_ihcal_phi[id] - m_tr_charge[id]*0.09); // for the track we only need the direction!
                     cluster.SetPtEtaPhi(m_simtwr_ihcal_e[i]/(ihcal_sf*cosh(m_simtwr_ihcal_eta[i])), m_simtwr_ihcal_eta[i], m_simtwr_ihcal_phi[i]);
                     float dR = track.DeltaR(cluster);
                     if(dR < dRThreshold){

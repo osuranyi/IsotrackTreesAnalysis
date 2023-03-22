@@ -60,7 +60,7 @@ void IsotrackTreesAnalysis::Loop(){
 
     // Postprocess 
     
-    backgroundDeconvolution();
+    //backgroundDeconvolution();
 
     // Saving output file
     outputFile->Write();
@@ -113,8 +113,7 @@ void IsotrackTreesAnalysis::processEvent(){
 }
 
 void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters){
-
-    
+ 
     // Calculate energy of matched clusters
     float totalCemcEnergy = cemcClusters.getTotalEnergy();
     float totalIhcalEnergy = ihcalClusters.getTotalEnergy();
@@ -122,12 +121,12 @@ void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClu
     
     float totalEnergy;
 
-    if(SHOWER_START == cemc)
+    //if(SHOWER_START == cemc)
         totalEnergy = totalCemcEnergy + totalIhcalEnergy + totalOhcalEnergy;
-    else if(SHOWER_START == ihcal)
-        totalEnergy = totalIhcalEnergy + totalOhcalEnergy;
-    else if(SHOWER_START == ohcal)
-        totalEnergy = totalOhcalEnergy;
+    //else if(SHOWER_START == ihcal)
+    //    totalEnergy = totalIhcalEnergy + totalOhcalEnergy;
+    //else if(SHOWER_START == ohcal)
+    //    totalEnergy = totalOhcalEnergy;
 
     ///////////////////////////////////////////
     // Analysis modules should be added here //
