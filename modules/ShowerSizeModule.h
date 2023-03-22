@@ -190,7 +190,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
 
     //if(totalCemcEnergy > 0.16){
         cemcDiffEta[showerType]->Fill(m_tr_cemc_eta[id] - cemc_eta_mean);
-        cemcDiffPhi[showerType]->Fill(m_tr_cemc_phi[id] - cemc_phi_mean);
+        cemcDiffPhi[showerType]->Fill(0.5*(m_tr_cemc_phi[id]+m_tr_ihcal_phi[id]) - cemc_phi_mean);
         cemcSigmaEta[showerType]->Fill(sqrt(cemc_eta_sigma2));
         cemcSigmaPhi[showerType]->Fill(sqrt(cemc_phi_sigma2));
 
@@ -202,7 +202,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
 
     //if(totalIhcalEnergy > 0.06){
         ihcalDiffEta[showerType]->Fill(m_tr_ihcal_eta[id] - ihcal_eta_mean);
-        ihcalDiffPhi[showerType]->Fill(m_tr_ihcal_phi[id] - ihcal_phi_mean);
+        ihcalDiffPhi[showerType]->Fill(m_tr_ihcal_phi[id]-m_tr_charge[id]*0.09 - ihcal_phi_mean);
         ihcalSigmaEta[showerType]->Fill(sqrt(ihcal_eta_sigma2));
         ihcalSigmaPhi[showerType]->Fill(sqrt(ihcal_phi_sigma2));
 
@@ -214,7 +214,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
 
     //if(totalOhcalEnergy > 0.12){
         ohcalDiffEta[showerType]->Fill(m_tr_ohcal_eta[id] - ohcal_eta_mean);
-        ohcalDiffPhi[showerType]->Fill(m_tr_ohcal_phi[id] - ohcal_phi_mean);
+        ohcalDiffPhi[showerType]->Fill(m_tr_ohcal_phi[id]+m_tr_charge[id]*0.04 - ohcal_phi_mean);
         ohcalSigmaEta[showerType]->Fill(sqrt(ohcal_eta_sigma2));
         ohcalSigmaPhi[showerType]->Fill(sqrt(ohcal_phi_sigma2));
 
