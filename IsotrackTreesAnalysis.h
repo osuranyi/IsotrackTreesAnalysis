@@ -446,6 +446,10 @@ class IsotrackTreesAnalysis {
         TH1F* histNNH[8];
         TH1F* histNNEMraw[8];
         TH1F* histNNHraw[8];
+        TEfficiency* energy_radius_purity;
+        TEfficiency* energy_radius_efficiency;
+        TH1F* energy_dist_mip;
+        TH1F* energy_dist_shower;
         
         // Shower size module
         TH1F* cemcDiffEta[6];
@@ -527,6 +531,9 @@ class IsotrackTreesAnalysis {
 
         void initBackgroundCheckModule();
         void backgroundCheckModule(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
+
+        void initEnergyRadiusOptimizationModule();
+        void energyRadiusOptimizationModule(int id, MatchedClusterContainer cemcClusters);
 
         void initShowerSizeModule();
         void showerSizeModule(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);

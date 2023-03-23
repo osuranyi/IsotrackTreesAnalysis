@@ -21,6 +21,7 @@
 #include "modules/ZeroShowerEnergyModule.h"
 #include "modules/BackgroundEstimationModule.h"
 #include "modules/BackgroundCheckModule.h"
+#include "modules/EnergyRadiusOptimizationModule.h"
 #include "modules/ShowerSizeModule.h"
 
 #include "postprocess/BackgroundDeconvolution.h"
@@ -38,8 +39,9 @@ void IsotrackTreesAnalysis::Loop(){
 
     //initTrackResolutionModule();
     initTrackRatesModule();
-    initEOverPModule();
+    //initEOverPModule();
     initChecksModule();
+    if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
 
     initBackgroundEstimationModule();
     initBackgroundCheckModule();
@@ -145,5 +147,6 @@ void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClu
     if(USE_TOWER_INFO && USE_PARTICLE_GUN){
         showerSizeModule(id, cemcClusters, ihcalClusters, ohcalClusters);
         zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
+        energyRadiusOptimizationModule(id, cemcClusters);
     }
 }
