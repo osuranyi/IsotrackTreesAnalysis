@@ -19,6 +19,7 @@
 #include "modules/ChecksModule.h"
 #include "modules/ZeroShowerEnergyModule.h"
 #include "modules/BackgroundCheckModule.h"
+#include "modules/EnergyRadiusOptimizationModule.h"
 
 #include "postprocess/BackgroundDeconvolution.h"
 
@@ -35,12 +36,13 @@ void IsotrackTreesAnalysis::Loop(){
 
     //initTrackResolutionModule();
     initTrackRatesModule();
-    initEOverPModule();
+    //initEOverPModule();
     initChecksModule();
+    if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
 
-    initZeroShowerEnergyModule();
+    //initZeroShowerEnergyModule();
     //initFFT();
-    initBackgroundCheckModule();
+    //initBackgroundCheckModule();
 
     ///////////////////////////////////////////////////
   
@@ -55,7 +57,7 @@ void IsotrackTreesAnalysis::Loop(){
 
     // Postprocess 
     
-    backgroundDeconvolution();
+    //backgroundDeconvolution();
 
     // Saving output file
     outputFile->Write();
@@ -70,7 +72,7 @@ void IsotrackTreesAnalysis::processEvent(){
                 assert(m_tr_cemc_eta[i] > -98 && m_tr_cemc_phi[i] > -98 && fabs(m_tr_cemc_eta[i]) <= 1.0);
                 //std::cout << "pass track selection" << std::endl;
                 if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))) {
-                    if (!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1 && mipShowerClassifier(i) > 3)) {
+                    if (!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1)) { //&& mipShowerClassifier(i) > 3)) {
                         processTrack(i);
                     }
                 } 
@@ -109,10 +111,11 @@ void IsotrackTreesAnalysis::processTrack(int id){
 
     //trackResolutionModule(id, totalEnergy);
     trackRatesModule(id);
-    eOverPModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
+    //eOverPModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
     checksModule(cemcClusters, ihcalClusters, ohcalClusters);
-    backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
+    //backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
+    if (USE_PARTICLE_GUN) energyRadiusOptimizationModule(id, cemcClusters);
 
     //if(USE_TRUTH_INFO)
-    zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
+    //zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
 }
