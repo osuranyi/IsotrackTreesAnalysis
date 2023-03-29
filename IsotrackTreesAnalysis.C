@@ -103,9 +103,10 @@ void IsotrackTreesAnalysis::processEvent(){
                 // Process tracks which MIPs through the EMCal and starts to shower later
 
                 if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))){
-                    if(mipShowerClassifier(i,cemcClusters,ihcalClusters,ohcalClusters) >= SHOWER_START){
+                    //FIXME if(mipShowerClassifier(i,cemcClusters,ihcalClusters,ohcalClusters) >= SHOWER_START){
+                    if(!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1)) // FIXME
                         processTrack(i,cemcClusters,ihcalClusters,ohcalClusters);
-                    }
+                    //}
                 }
             }
         }
@@ -113,16 +114,15 @@ void IsotrackTreesAnalysis::processEvent(){
 }
 
 void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters){
- 
+
     // Calculate energy of matched clusters
     float totalCemcEnergy = cemcClusters.getTotalEnergy();
     float totalIhcalEnergy = ihcalClusters.getTotalEnergy();
     float totalOhcalEnergy = ohcalClusters.getTotalEnergy();
     
-    float totalEnergy;
-
-    //if(SHOWER_START == cemc)
-        totalEnergy = totalCemcEnergy + totalIhcalEnergy + totalOhcalEnergy;
+    float totalEnergy = totalCemcEnergy + totalIhcalEnergy + totalOhcalEnergy;
+    float totalHcalEnergy = totalIhcalEnergy + totalOhcalEnergy;
+    
     //else if(SHOWER_START == ihcal)
     //    totalEnergy = totalIhcalEnergy + totalOhcalEnergy;
     //else if(SHOWER_START == ohcal)
@@ -134,7 +134,7 @@ void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClu
 
     //trackResolutionModule(id, totalEnergy);
     trackRatesModule(id);
-    eOverPModule(id, totalEnergy);
+    eOverPModule(id, totalEnergy, totalHcalEnergy);
     checksModule(cemcClusters, ihcalClusters, ohcalClusters);
     
     if(SHOWER_START == cemc){

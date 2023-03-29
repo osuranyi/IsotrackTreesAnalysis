@@ -403,7 +403,12 @@ class IsotrackTreesAnalysis {
         // EOverPModule
         TH2F* histEoverP[8];
         TH2F* histEoverPRaw[9];
+        TH2F* histEHcalOverPRaw[9];
         TH2F* histEoverPBkg[8];
+        
+        TH2F* histEoverP_EMCalShower;
+        TH2F* histEoverP_EMCalMIP;
+        
         // TrackRatesModule
         TH1F* histTrackTotal;
         TH1F* histTrackRate[8];
@@ -511,7 +516,7 @@ class IsotrackTreesAnalysis {
         void trackResolutionModule(int id, float totalEnergy);
 
         void initEOverPModule();
-        void eOverPModule(int id, float totalEnergy);
+        void eOverPModule(int id, float totalEnergy, float totalHcalEnergy);
 
         void initTrackRatesModule();
         void trackRatesModule(int id);
