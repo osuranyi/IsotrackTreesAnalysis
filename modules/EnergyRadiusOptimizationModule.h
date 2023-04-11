@@ -1,12 +1,7 @@
 #pragma once
 #include "../IsotrackTreesAnalysis.h"
-#include "../selections/MipShowerClassifier.h"
 #include <TVector3.h>
 #include <string>
-
-// Things that I want to know from the g4hits:
-//   When passing my emcal energy cut, what is the e/p distribution in the ihcal+ohcal?
-//   When passing my emcal energy cut, what is the e/p distribution in a deltaR < 0.2 cone in the ihcal+ohcal
 
 void IsotrackTreesAnalysis::initEnergyRadiusOptimizationModule() {
   energy_radius_purity = new TEfficiency("energy_radius_purity","Mip Purity;DeltaR;Energy (GeV)",15,0.0375,0.4125,17,0.1875,0.6125);
@@ -24,7 +19,7 @@ void IsotrackTreesAnalysis::energyRadiusOptimizationModule(int id, MatchedCluste
 
   bool mip;
   bool pass_cut;
-  int classify = mipShowerClassifier(id);
+  int classify = truthMipShowerClassifier(id);
   //std::cout << classify << std::endl;
   if (classify <= 2 || classify == 7) { mip = false; }
   else { mip = true; }

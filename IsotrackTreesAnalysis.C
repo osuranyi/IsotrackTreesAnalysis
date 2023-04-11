@@ -41,12 +41,12 @@ void IsotrackTreesAnalysis::Loop(){
     initTrackRatesModule();
     //initEOverPModule();
     initChecksModule();
-    if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
+    //if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
 
-    initBackgroundEstimationModule();
-    initBackgroundCheckModule();
+    //initBackgroundEstimationModule();
+    //initBackgroundCheckModule();
 
-    initZeroShowerEnergyModule();
+    //initZeroShowerEnergyModule();
     initShowerSizeModule();
 
     ///////////////////////////////////////////////////
@@ -72,9 +72,9 @@ void IsotrackTreesAnalysis::Loop(){
 void IsotrackTreesAnalysis::processEvent(){
 
     if (basicEventSelection()) {
-        for (int i = 0; i < m_trkmult; i++){
+	for (int i = 0; i < m_trkmult; i++){
             if (basicTrackSelection(i)){
-
+		
                 MatchedClusterContainer cemcClusters;
                 MatchedClusterContainer ihcalClusters;
                 MatchedClusterContainer ohcalClusters;
@@ -96,18 +96,10 @@ void IsotrackTreesAnalysis::processEvent(){
                     ohcalClusters = getMatchedClusters(i,ohcal,OHCAL_MATCHING_DR_CUT);
                 }
                            
-                //assert(m_tr_cemc_eta[i] > -98 && m_tr_cemc_phi[i] > -98 && fabs(m_tr_cemc_eta[i]) <= 1.0);
-                //if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))) {
-                    //if (!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1 && mipTruthShowerClassifier(i) > 3)) {
-                    //}
-                //}
-
                 // Process tracks which MIPs through the EMCal and starts to shower later
 
                 if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))){
-                    if(mipShowerClassifier(i,cemcClusters,ihcalClusters,ohcalClusters) >= SHOWER_START){
-                        processTrack(i,cemcClusters,ihcalClusters,ohcalClusters);
-                    }
+	                processTrack(i,cemcClusters,ihcalClusters,ohcalClusters);
                 }
             }
         }
@@ -115,12 +107,12 @@ void IsotrackTreesAnalysis::processEvent(){
 }
 
 void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters){
- 
+    
     // Calculate energy of matched clusters
     float totalCemcEnergy = cemcClusters.getTotalEnergy();
     float totalIhcalEnergy = ihcalClusters.getTotalEnergy();
     float totalOhcalEnergy = ohcalClusters.getTotalEnergy();
-    
+
     float totalEnergy;
 
     //if(SHOWER_START == cemc)
@@ -136,17 +128,17 @@ void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClu
 
     //trackResolutionModule(id, totalEnergy);
     trackRatesModule(id);
-    eOverPModule(id, totalEnergy);
+    //eOverPModule(id, totalEnergy);
     checksModule(cemcClusters, ihcalClusters, ohcalClusters);
-    
-    if(SHOWER_START == cemc){
-        backgroundEstimationModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
-        backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
-    }
 
-    if(USE_TOWER_INFO && USE_PARTICLE_GUN){
+    //if(SHOWER_START == cemc){
+    //backgroundEstimationModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
+        //backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
+    //}
+    
+    //if(USE_TOWER_INFO && USE_PARTICLE_GUN){
         showerSizeModule(id, cemcClusters, ihcalClusters, ohcalClusters);
-        zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
-        energyRadiusOptimizationModule(id, cemcClusters);
-    }
+        //zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
+        //energyRadiusOptimizationModule(id, cemcClusters);
+    //}
 }

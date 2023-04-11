@@ -32,7 +32,7 @@ class IsotrackTreesAnalysis {
        
         std::string OUTPUT_FILENAME;
 
-        bool USE_TOWER_INFO;
+        int USE_TOWER_INFO;
         bool USE_TRUTH_INFO;
         bool USE_CENTRALITY;
         bool USE_PARTICLE_GUN;
@@ -452,6 +452,11 @@ class IsotrackTreesAnalysis {
         TH1F* energy_dist_shower;
         
         // Shower size module
+        TH1F* cemcSigmaEtaAll;
+        TH1F* cemcSigmaPhiAll;
+        TH1F* ohcalSigmaEtaAll;
+        TH1F* ohcalSigmaPhiAll;
+
         TH1F* cemcDiffEta[6];
         TH1F* cemcDiffPhi[6];
         TH1F* ihcalDiffEta[6];
@@ -488,7 +493,7 @@ class IsotrackTreesAnalysis {
 
     public:
 
-        IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, bool useTowerInfo, bool useTruthInfo, bool useCentrality, bool useParticleGun, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy, int showerStart);
+        IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, int useTowerInfo, bool useTruthInfo, bool useCentrality, bool useParticleGun, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy, int showerStart);
         virtual ~IsotrackTreesAnalysis();
         virtual Int_t    Cut(Long64_t entry);
         virtual void    GetEntry(Long64_t entry);
@@ -547,7 +552,7 @@ class IsotrackTreesAnalysis {
 #endif
 
 #ifdef IsotrackTreesAnalysis_cxx
-IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, bool useTowerInfo, bool useTruthInfo, bool useCentrality, bool useParticleGun, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy, int showerStart) :
+IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, int useTowerInfo, bool useTruthInfo, bool useCentrality, bool useParticleGun, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy, int showerStart) :
   USE_TOWER_INFO(useTowerInfo),
   USE_TRUTH_INFO(useTruthInfo),
   USE_CENTRALITY(useCentrality),
