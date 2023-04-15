@@ -93,7 +93,7 @@ void IsotrackTreesAnalysis::processEvent(){
                     ihcalClusters = getMatchedClusters(i,ihcal,IHCAL_MATCHING_DR_CUT);
                     ohcalClusters = getMatchedClusters(i,ohcal,OHCAL_MATCHING_DR_CUT);
                 }
-                           
+                   
                 //assert(m_tr_cemc_eta[i] > -98 && m_tr_cemc_phi[i] > -98 && fabs(m_tr_cemc_eta[i]) <= 1.0);
                 //if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))) {
                     //if (!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1 && mipTruthShowerClassifier(i) > 3)) {
