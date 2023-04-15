@@ -32,7 +32,7 @@ class IsotrackTreesAnalysis {
        
         std::string OUTPUT_FILENAME;
 
-        bool USE_TOWER_INFO;
+        int USE_TOWER_INFO;
         bool USE_TRUTH_INFO;
         bool USE_CENTRALITY;
         bool USE_PARTICLE_GUN;
@@ -403,7 +403,12 @@ class IsotrackTreesAnalysis {
         // EOverPModule
         TH2F* histEoverP[8];
         TH2F* histEoverPRaw[9];
+        TH2F* histEHcalOverPRaw[9];
         TH2F* histEoverPBkg[8];
+        
+        TH2F* histEoverP_EMCalShower;
+        TH2F* histEoverP_EMCalMIP;
+        
         // TrackRatesModule
         TH1F* histTrackTotal;
         TH1F* histTrackRate[8];
@@ -476,6 +481,14 @@ class IsotrackTreesAnalysis {
         TH2F* ohcalSigmaEtaVsE[6];
         TH2F* ohcalSigmaPhiVsE[6];
 
+        TH1F* cemcTowerEta[6];
+        TH1F* cemcTowerPhi[6];
+        TH1F* ihcalTowerEta[6];
+        TH1F* ihcalTowerPhi[6];
+        TH1F* ohcalTowerEta[6];
+        TH1F* ohcalTowerPhi[6];
+
+
         /////////////////////////////
         // Random number generator //
         /////////////////////////////
@@ -484,7 +497,7 @@ class IsotrackTreesAnalysis {
 
     public:
 
-        IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, bool useTowerInfo, bool useTruthInfo, bool useCentrality, bool useParticleGun, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy, int showerStart);
+        IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, int useTowerInfo, bool useTruthInfo, bool useCentrality, bool useParticleGun, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy, int showerStart);
         virtual ~IsotrackTreesAnalysis();
         virtual Int_t    Cut(Long64_t entry);
         virtual void    GetEntry(Long64_t entry);
@@ -511,7 +524,7 @@ class IsotrackTreesAnalysis {
         void trackResolutionModule(int id, float totalEnergy);
 
         void initEOverPModule();
-        void eOverPModule(int id, float totalEnergy);
+        void eOverPModule(int id, float totalEnergy, float totalHcalEnergy);
 
         void initTrackRatesModule();
         void trackRatesModule(int id);
@@ -540,7 +553,7 @@ class IsotrackTreesAnalysis {
 #endif
 
 #ifdef IsotrackTreesAnalysis_cxx
-IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, bool useTowerInfo, bool useTruthInfo, bool useCentrality, bool useParticleGun, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy, int showerStart) :
+IsotrackTreesAnalysis::IsotrackTreesAnalysis(std::string inputFilename, std::string outputFilename, int useTowerInfo, bool useTruthInfo, bool useCentrality, bool useParticleGun, float centralityCut, float d0Cut, float z0Cut, float ptCut, float matchedPtCut, float matchedDrCut, float matchedNeutralTruthPtCut, float matchedNeutralTruthEtaCut, float matchedNeutralTruthDrCut, float cemcMatchingDrCut, float ihcalMatchingDrCut, float ohcalMatchingDrCut, float cemcMipEnergy, float ihcalMipEnergy, int showerStart) :
   USE_TOWER_INFO(useTowerInfo),
   USE_TRUTH_INFO(useTruthInfo),
   USE_CENTRALITY(useCentrality),
