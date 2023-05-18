@@ -2,6 +2,13 @@
 #include "../IsotrackTreesAnalysis.h"
 
 void IsotrackTreesAnalysis::initShowerSizeModule(){
+
+    cemcSigmaEtaAll = new TH1F("cemc_sigma_eta_all","",500,0.0,1.0);
+    cemcSigmaPhiAll = new TH1F("cemc_sigma_phi_all","",500,0.0,1.0);
+    ohcalSigmaEtaAll = new TH1F("ohcal_sigma_eta_all","",500,0.0,1.0);
+    ohcalSigmaPhiAll = new TH1F("ohcal_sigma_phi_all","",00,0.0,1.0);
+
+    
     for(int i = 0; i < 6; i++){
         cemcDiffEta[i] = new TH1F(Form("cemc diff eta %d",i+1),";#Delta#eta;Entries",50,-0.15,0.15);
         cemcDiffPhi[i] = new TH1F(Form("cemc diff phi %d",i+1),";#Delta#phi;Entries",50,-0.15,0.15);
@@ -42,7 +49,7 @@ void IsotrackTreesAnalysis::initShowerSizeModule(){
 
         ohcalSigmaEtaVsE[i] = new TH2F(Form("ohcal sigma eta vs E %d",i+1),";#sigma_{#eta};E [GeV];Entries",50,0.0,0.15,50,0,4.0);
         ohcalSigmaPhiVsE[i] = new TH2F(Form("ohcal sigma phi vs E %d",i+1),";#sigma_{#phi};E [GeV];Entries",50,0.0,0.15,50,0,4.0);
-
+        
 
         // These histograms will be filled with tower eta/phi w.r.t shower center-of-gravity
         cemcTowerEta[i] = new TH1F(Form("cemc tower eta %d",i+1),";#Delta#eta_{tow};Total E [GeV]",50,-0.1,0.1);
@@ -102,7 +109,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
     
     int showerType = truthMipShowerClassifier(id) - 1;
 
-    if(showerType == -1)
+    if(showerType == -1 || showerType == 6)
         return;
     
     /////////////////////////////////

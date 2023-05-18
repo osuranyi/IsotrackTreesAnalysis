@@ -19,15 +19,15 @@ bool IsotrackTreesAnalysis::basicTrackSelection(int id){
     }*/
 
     // Track quality criteria
-    if(m_tr_chisq[id] / m_tr_ndf[id] > 10.0){
+    if(!USE_PARTICLE_GUN && m_tr_chisq[id] / m_tr_ndf[id] > 10.0){
         return false;
     }
 
     // DCA cut --> FIXME: what is the unit of DCA?? Probably cm, cut should be 20um
-    if(fabs(m_tr_dca_xy[id]) > 0.002 || fabs(m_tr_dca_z[id]) > 0.002){
+    if(!USE_PARTICLE_GUN && (fabs(m_tr_dca_xy[id]) > 0.002 || fabs(m_tr_dca_z[id]) > 0.002)){
         return false;
     }
-
+    
     // Only considering those tracks which reaches at least the IHCal
     if (m_tr_cemc_eta[id] < -998 || m_tr_cemc_phi[id] < -998/* || m_tr_ihcal_eta[id] < -998 || m_tr_ihcal_phi[id] < -998*/) {
         return false;
@@ -38,6 +38,10 @@ bool IsotrackTreesAnalysis::basicTrackSelection(int id){
         return false;
     }
 
+    if (USE_PARTICLE_GUN && m_tr_truth_track_id[id] != 1) {
+        return false;
+    }
+    
     // Track isolation condition
     TVector3 v1, v2;
 

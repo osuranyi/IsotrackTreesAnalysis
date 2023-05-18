@@ -26,6 +26,7 @@
 #include "modules/ZeroShowerEnergyModule.h"
 #include "modules/BackgroundEstimationModule.h"
 #include "modules/BackgroundCheckModule.h"
+#include "modules/EnergyRadiusOptimizationModule.h"
 #include "modules/ShowerSizeModule.h"
 
 #include "postprocess/BackgroundDeconvolution.h"
@@ -45,13 +46,14 @@ void IsotrackTreesAnalysis::Loop(){
     initVertexModule();
     //initTrackResolutionModule();
     initTrackRatesModule();
-    initEOverPModule();
+    //initEOverPModule();
     initChecksModule();
+    //if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
 
-    initBackgroundEstimationModule();
-    initBackgroundCheckModule();
+    //initBackgroundEstimationModule();
+    //initBackgroundCheckModule();
 
-    initZeroShowerEnergyModule();
+    //initZeroShowerEnergyModule();
     initShowerSizeModule();
 
     ///////////////////////////////////////////////////
@@ -155,15 +157,16 @@ void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClu
     trackRatesModule(id);
     eOverPModule(id, totalEnergy, totalHcalEnergy);
     checksModule(cemcClusters, ihcalClusters, ohcalClusters);
-    
-    if(SHOWER_START == cemc){
-        backgroundEstimationModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
-        backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
-    }
 
+    if(SHOWER_START == cemc){
+      backgroundEstimationModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
+      backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
+    }
+    
     if(USE_TOWER_INFO && USE_PARTICLE_GUN){
         cutFlow->Fill(6);
         showerSizeModule(id, cemcClusters, ihcalClusters, ohcalClusters);
         zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
+
     }
 }
