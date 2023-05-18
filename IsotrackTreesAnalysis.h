@@ -398,6 +398,8 @@ class IsotrackTreesAnalysis {
         // Histograms //
         ////////////////
 
+        TH1F* cutFlow;
+
         // TrackResolutionModule
         TH2F* histEoverP_2D[5];
         // EOverPModule
@@ -420,7 +422,38 @@ class IsotrackTreesAnalysis {
         TH2F* histEoverPBkgDec;
 
         TEfficiency* graphZeroShower;
-   
+  
+        // Track quality
+        TH1F* d0;
+        TH1F* z0;
+        TH1F* chi2ndf;
+        TH1F* dca_xy;
+        TH1F* dca_z;
+
+        TH2F* d0VsPt;
+        TH2F* z0VsPt;
+        TH2F* chi2ndfVsPt;
+        TH2F* dca_xyVsPt;
+        TH2F* dca_zVsPt;
+
+        TH2F* d0VsP;
+        TH2F* z0VsP;
+        TH2F* chi2ndfVsP;
+        TH2F* dca_xyVsP;
+        TH2F* dca_zVsP;
+
+        // Vertex properties
+        TH1F* x_pv;
+        TH1F* y_pv;
+        TH1F* z_pv;
+        TH1F* r_pv;
+
+        TH2F* xy_pv;
+        TH2F* zr_pv;
+
+        TH1F* nTrackRealVertex;
+        TH1F* nTrackZeroPosVertex;
+
         // BackgroundCheckModule
         TH2F* histEoverPNN[8];
         TH2F* histEoverPNNtest[8];
@@ -488,6 +521,20 @@ class IsotrackTreesAnalysis {
         TH1F* ohcalTowerEta[6];
         TH1F* ohcalTowerPhi[6];
 
+        TH2F* cemcTowerEtaVsP[6];
+        TH2F* cemcTowerPhiVsP[6];
+        TH2F* ihcalTowerEtaVsP[6];
+        TH2F* ihcalTowerPhiVsP[6];
+        TH2F* ohcalTowerEtaVsP[6];
+        TH2F* ohcalTowerPhiVsP[6];
+
+        TH2F* cemcTowerEtaVsPt[6];
+        TH2F* cemcTowerPhiVsPt[6];
+        TH2F* ihcalTowerEtaVsPt[6];
+        TH2F* ihcalTowerPhiVsPt[6];
+        TH2F* ohcalTowerEtaVsPt[6];
+        TH2F* ohcalTowerPhiVsPt[6];
+
 
         /////////////////////////////
         // Random number generator //
@@ -511,6 +558,11 @@ class IsotrackTreesAnalysis {
         void processTrack(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
         bool basicEventSelection();
         bool basicTrackSelection(int id);
+        
+        bool trackKinematicSelection(int id); // pT, eta
+        bool trackIsolationSelection(int id); // reaching calo, no other tracks around
+        bool trackQualitySelection(int id);   // z0,v0,dca,chi2/ndf
+
         int mipShowerClassifier(int id, MatchedClusterContainer cemc, MatchedClusterContainer ihcal, MatchedClusterContainer ohcal);
         bool truthIsolatedTrackSelection(int id);
         int truthMipShowerClassifier(int id);
@@ -531,6 +583,12 @@ class IsotrackTreesAnalysis {
 
         void initChecksModule();
         void checksModule(MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
+
+        void initTrackQualityModule();
+        void trackQualityModule(int id);
+
+        void initVertexModule();
+        void vertexModule();
 
         void initZeroShowerEnergyModule();
         void zeroShowerEnergyModule(int id, float cemcEnergy, float ihcalEnergy, float ohcalEnergy);
