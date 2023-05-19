@@ -34,14 +34,13 @@ void IsotrackTreesAnalysis::initBackgroundCheckModule() {
       histNNEM[4*i+j] = new TH1F(TString::Format("NNEM_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",50,0,50);
       histNNH[4*i+j] = new TH1F(TString::Format("NNH_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",50,0,50);
 
-
       histENN[4*i+j] = new TH2F(TString::Format("eNN_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
       histENNtest[4*i+j] = new TH2F(TString::Format("eNNtest_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
       histEoverPNN[4*i+j] = new TH2F(TString::Format("epNN_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,20);
       histEoverPNNtest[4*i+j] = new TH2F(TString::Format("epNNtest_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,20);
-      histCemcE[4*i+j] = new TH2F(TString::Format("CemcE_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
-      histIhcalE[4*i+j] = new TH2F(TString::Format("IhcalE_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
-      histBkgE[4*i+j] = new TH2F(TString::Format("BkgE_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
+      histCemcE[4*i+j] = new TH2F(TString::Format("CemcENN_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
+      histIhcalE[4*i+j] = new TH2F(TString::Format("IhcalENN_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
+      histBkgE[4*i+j] = new TH2F(TString::Format("BkgENN_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
       histBkgEoverPNN[4*i+j] = new TH2F(TString::Format("epBkgNN_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,20);
 
       histENEM[4*i+j] = new TH2F(TString::Format("eNEM_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,40);
@@ -106,7 +105,7 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
     bool NH = false;
 
     TVector3 v1, v2;
-    v1.SetPtEtaPhi(m_tr_pt[id], m_tr_cemc_eta[id], m_tr_cemc_phi[id]);
+    v1.SetPtEtaPhi(m_tr_pt[id], m_tr_cemc_eta[id], 0.5*(m_tr_cemc_phi[id]+m_tr_ihcal_phi[id]));
     for (int j = 0; j < m_g4; j++) {
       if (neutral_pid.find(m_g4_pid[j]) == neutral_pid.end() || m_g4_pt[j] < MATCHED_NEUTRAL_TRUTH_PT_CUT || fabs(m_g4_eta[j]) > MATCHED_NEUTRAL_TRUTH_ETA_CUT) { continue; }
 

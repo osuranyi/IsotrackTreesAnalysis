@@ -39,15 +39,15 @@ void IsotrackTreesAnalysis::Loop(){
 
     //initTrackResolutionModule();
     initTrackRatesModule();
-    //initEOverPModule();
+    initEOverPModule();
     initChecksModule();
     //if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
 
-    //initBackgroundEstimationModule();
-    //initBackgroundCheckModule();
+    initBackgroundEstimationModule();
+    initBackgroundCheckModule();
 
     //initZeroShowerEnergyModule();
-    initShowerSizeModule();
+    //initShowerSizeModule();
 
     ///////////////////////////////////////////////////
   
@@ -128,16 +128,16 @@ void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClu
 
     //trackResolutionModule(id, totalEnergy);
     trackRatesModule(id);
-    //eOverPModule(id, totalEnergy);
+    eOverPModule(id, totalEnergy);
     checksModule(cemcClusters, ihcalClusters, ohcalClusters);
 
     //if(SHOWER_START == cemc){
-    //backgroundEstimationModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
-        //backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
+    backgroundEstimationModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
+    backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
     //}
     
     //if(USE_TOWER_INFO && USE_PARTICLE_GUN){
-        showerSizeModule(id, cemcClusters, ihcalClusters, ohcalClusters);
+        //showerSizeModule(id, cemcClusters, ihcalClusters, ohcalClusters);
         //zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
         //energyRadiusOptimizationModule(id, cemcClusters);
     //}
