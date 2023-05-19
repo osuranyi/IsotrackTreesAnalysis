@@ -51,6 +51,36 @@ void IsotrackTreesAnalysis::initShowerSizeModule(){
         ohcalSigmaPhiVsE[i] = new TH2F(Form("ohcal sigma phi vs E %d",i+1),";#sigma_{#phi};E [GeV];Entries",50,0.0,0.15,50,0,4.0);
         
 
+        // These histograms will be filled with tower eta/phi w.r.t shower center-of-gravity
+        cemcTowerEta[i] = new TH1F(Form("cemc tower eta %d",i+1),";#Delta#eta_{tow};Total E [GeV]",50,-0.1,0.1);
+        cemcTowerPhi[i] = new TH1F(Form("cemc tower phi %d",i+1),";#Delta#phi_{tow};Total E [GeV]",50,-0.1,0.1);
+
+        ihcalTowerEta[i] = new TH1F(Form("ihcal tower eta %d",i+1),";#Delta#eta_{tow};Total E [GeV]",50,-0.1,0.1);
+        ihcalTowerPhi[i] = new TH1F(Form("ihcal tower phi %d",i+1),";#Delta#phi_{tow};Total E [GeV]",50,-0.1,0.1);
+
+        ohcalTowerEta[i] = new TH1F(Form("ohcal tower eta %d",i+1),";#Delta#eta_{tow};Total E [GeV]",50,-0.1,0.1);
+        ohcalTowerPhi[i] = new TH1F(Form("ohcal tower phi %d",i+1),";#Delta#phi_{tow};Total E [GeV]",50,-0.1,0.1);
+        
+
+        cemcTowerEtaVsP[i] = new TH2F(Form("cemc tower eta %d vs p",i+1),";#Delta#eta_{tow};p [GeV]",50,-0.1,0.1,20,0,20);
+        cemcTowerPhiVsP[i] = new TH2F(Form("cemc tower phi %d vs p",i+1),";#Delta#phi_{tow};p [GeV]",50,-0.1,0.1,20,0,20);
+
+        ihcalTowerEtaVsP[i] = new TH2F(Form("ihcal tower eta %d vs p",i+1),";#Delta#eta_{tow};p [GeV]",50,-0.1,0.1,20,0,20);
+        ihcalTowerPhiVsP[i] = new TH2F(Form("ihcal tower phi %d vs p",i+1),";#Delta#phi_{tow};p [GeV]",50,-0.1,0.1,20,0,20);
+
+        ohcalTowerEtaVsP[i] = new TH2F(Form("ohcal tower eta %d vs p",i+1),";#Delta#eta_{tow};p [GeV]",50,-0.1,0.1,20,0,20);
+        ohcalTowerPhiVsP[i] = new TH2F(Form("ohcal tower phi %d vs p",i+1),";#Delta#phi_{tow};p [GeV]",50,-0.1,0.1,20,0,20);
+
+
+        cemcTowerEtaVsPt[i] = new TH2F(Form("cemc tower eta %d vs pt",i+1),";#Delta#eta_{tow};p_{T} [GeV]",50,-0.1,0.1,20,0,20);
+        cemcTowerPhiVsPt[i] = new TH2F(Form("cemc tower phi %d vs pt",i+1),";#Delta#phi_{tow};p_{T} [GeV]",50,-0.1,0.1,20,0,20);
+
+        ihcalTowerEtaVsPt[i] = new TH2F(Form("ihcal tower eta %d vs pt",i+1),";#Delta#eta_{tow};p_{T} [GeV]",50,-0.1,0.1,20,0,20);
+        ihcalTowerPhiVsPt[i] = new TH2F(Form("ihcal tower phi %d vs pt",i+1),";#Delta#phi_{tow};p_{T} [GeV]",50,-0.1,0.1,20,0,20);
+
+        ohcalTowerEtaVsPt[i] = new TH2F(Form("ohcal tower eta %d vs pt",i+1),";#Delta#eta_{tow};p_{T} [GeV]",50,-0.1,0.1,20,0,20);
+        ohcalTowerPhiVsPt[i] = new TH2F(Form("ohcal tower phi %d vs pt",i+1),";#Delta#phi_{tow};p_{T} [GeV]",50,-0.1,0.1,20,0,20);
+
         /*cemcDiffEtaVsPt[i] = new TH2F(Form("cemc diff eta vs E %d",i+1),";#Delta#eta;E [GeV];Entries",50,-0.15,0.15,50,0,4.0);
         cemcDiffPhiVsPt[i] = new TH2F(Form("cemc diff phi vs E %d",i+1),";#Delta#phi;E [GeV];Entries",50,-0.15,0.15,50,0,4.0);
 
@@ -96,7 +126,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
     float totalCemcEnergy = 0.0;
 
     for(int i = 0; i < numberOfCemcTowers; i++){
-        //if(cemcTowers.e[i] > 0.08){
+        //if(cemcTowers.e[i] > 0.04){
             totalCemcEnergy += cemcTowers.e[i];
             cemc_eta_mean += cemcTowers.e[i]*cemcTowers.eta[i];
             cemc_phi_mean += cemcTowers.e[i]*cemcTowers.phi[i];
@@ -108,7 +138,16 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
         cemc_phi_mean /= totalCemcEnergy;
     
         for(int i = 0; i < numberOfCemcTowers; i++){
-            //if(cemcTowers.e[i] > 0.08){
+            if(numberOfCemcTowers > 1){
+                cemcTowerEta[showerType]->Fill(cemcTowers.eta[i]-cemc_eta_mean, cemcTowers.e[i]);
+                cemcTowerPhi[showerType]->Fill(cemcTowers.phi[i]-cemc_phi_mean, cemcTowers.e[i]);
+                cemcTowerEtaVsP[showerType]->Fill(cemcTowers.eta[i]-cemc_eta_mean, m_tr_p[id], cemcTowers.e[i]);
+                cemcTowerPhiVsP[showerType]->Fill(cemcTowers.phi[i]-cemc_phi_mean, m_tr_p[id], cemcTowers.e[i]);
+                cemcTowerEtaVsPt[showerType]->Fill(cemcTowers.eta[i]-cemc_eta_mean, m_tr_pt[id], cemcTowers.e[i]);
+                cemcTowerPhiVsPt[showerType]->Fill(cemcTowers.phi[i]-cemc_phi_mean, m_tr_pt[id], cemcTowers.e[i]);
+            }
+
+            //if(cemcTowers.e[i] > 0.04){
                 cemc_eta_sigma2 += cemcTowers.e[i]*(cemcTowers.eta[i] - cemc_eta_mean)*(cemcTowers.eta[i] - cemc_eta_mean);
                 cemc_phi_sigma2 += cemcTowers.e[i]*(cemcTowers.phi[i] - cemc_phi_mean)*(cemcTowers.phi[i] - cemc_phi_mean);
             //}
@@ -144,6 +183,15 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
         ihcal_phi_mean /= totalIhcalEnergy;
     
         for(int i = 0; i < numberOfIhcalTowers; i++){
+            if(numberOfIhcalTowers > 1){
+                ihcalTowerEta[showerType]->Fill(ihcalTowers.eta[i]-ihcal_eta_mean, ihcalTowers.e[i]);
+                ihcalTowerPhi[showerType]->Fill(ihcalTowers.phi[i]-ihcal_phi_mean, ihcalTowers.e[i]);
+                ihcalTowerEtaVsP[showerType]->Fill(ihcalTowers.eta[i]-ihcal_eta_mean, m_tr_p[id], ihcalTowers.e[i]);
+                ihcalTowerPhiVsP[showerType]->Fill(ihcalTowers.phi[i]-ihcal_phi_mean, m_tr_p[id], ihcalTowers.e[i]);
+                ihcalTowerEtaVsPt[showerType]->Fill(ihcalTowers.eta[i]-ihcal_eta_mean, m_tr_pt[id], ihcalTowers.e[i]);
+                ihcalTowerPhiVsPt[showerType]->Fill(ihcalTowers.phi[i]-ihcal_phi_mean, m_tr_pt[id], ihcalTowers.e[i]);
+            }
+
             //if(ihcalTowers.e[i] > 0.03){
                 ihcal_eta_sigma2 += ihcalTowers.e[i]*(ihcalTowers.eta[i] - ihcal_eta_mean)*(ihcalTowers.eta[i] - ihcal_eta_mean);
                 ihcal_phi_sigma2 += ihcalTowers.e[i]*(ihcalTowers.phi[i] - ihcal_phi_mean)*(ihcalTowers.phi[i] - ihcal_phi_mean);
@@ -180,6 +228,15 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
         ohcal_phi_mean /= totalOhcalEnergy;
     
         for(int i = 0; i < numberOfOhcalTowers; i++){
+            if(numberOfOhcalTowers > 1){
+                ohcalTowerEta[showerType]->Fill(ohcalTowers.eta[i]-ohcal_eta_mean, ohcalTowers.e[i]);
+                ohcalTowerPhi[showerType]->Fill(ohcalTowers.phi[i]-ohcal_phi_mean, ohcalTowers.e[i]);
+                ohcalTowerEtaVsP[showerType]->Fill(ohcalTowers.eta[i]-ohcal_eta_mean, m_tr_p[id], ohcalTowers.e[i]);
+                ohcalTowerPhiVsP[showerType]->Fill(ohcalTowers.phi[i]-ohcal_phi_mean, m_tr_p[id], ohcalTowers.e[i]);
+                ohcalTowerEtaVsPt[showerType]->Fill(ohcalTowers.eta[i]-ohcal_eta_mean, m_tr_pt[id], ohcalTowers.e[i]);
+                ohcalTowerPhiVsPt[showerType]->Fill(ohcalTowers.phi[i]-ohcal_phi_mean, m_tr_pt[id], ohcalTowers.e[i]);
+            }
+
             //if(ohcalTowers.e[i] > 0.06){
                 ohcal_eta_sigma2 += ohcalTowers.e[i]*(ohcalTowers.eta[i] - ohcal_eta_mean)*(ohcalTowers.eta[i] - ohcal_eta_mean);
                 ohcal_phi_sigma2 += ohcalTowers.e[i]*(ohcalTowers.phi[i] - ohcal_phi_mean)*(ohcalTowers.phi[i] - ohcal_phi_mean);
@@ -195,12 +252,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
     // Fill histograms //
     /////////////////////
 
-        cemcSigmaEtaAll->Fill(sqrt(cemc_eta_sigma2));
-        cemcSigmaPhiAll->Fill(sqrt(cemc_phi_sigma2));
-        ohcalSigmaEtaAll->Fill(sqrt(ohcal_eta_sigma2));
-        ohcalSigmaPhiAll->Fill(sqrt(ohcal_phi_sigma2));
-    
-    //if(totalCemcEnergy > 0.16){
+    if(totalCemcEnergy > 0.16){
         cemcDiffEta[showerType]->Fill(m_tr_cemc_eta[id] - cemc_eta_mean);
         cemcDiffPhi[showerType]->Fill(0.5*(m_tr_cemc_phi[id]+m_tr_ihcal_phi[id]) - cemc_phi_mean);
         cemcSigmaEta[showerType]->Fill(sqrt(cemc_eta_sigma2));
@@ -210,7 +262,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
         cemcDiffPhiVsE[showerType]->Fill(m_tr_cemc_phi[id] - cemc_phi_mean, totalCemcEnergy);
         cemcSigmaEtaVsE[showerType]->Fill(sqrt(cemc_eta_sigma2), totalCemcEnergy);
         cemcSigmaPhiVsE[showerType]->Fill(sqrt(cemc_phi_sigma2), totalCemcEnergy);
-    //}
+    }
 
     //if(totalIhcalEnergy > 0.06){
         ihcalDiffEta[showerType]->Fill(m_tr_ihcal_eta[id] - ihcal_eta_mean);
