@@ -403,14 +403,15 @@ class IsotrackTreesAnalysis {
         // TrackResolutionModule
         TH2F* histEoverP_2D[5];
         // EOverPModule
-        TH2F* histEoverP[8];
         TH2F* histEoverPRaw[9];
+        // BackgroundEstimationModule
+        TH2F* histEoverP[8];
+        TH2F* histEBkg[8];
         TH2F* histEHcalOverPRaw[9];
         TH2F* histEoverPBkg[8];
         
         TH2F* histEoverP_EMCalShower;
         TH2F* histEoverP_EMCalMIP;
-        
         // TrackRatesModule
         TH1F* histTrackTotal;
         TH1F* histTrackRate[8];
@@ -484,6 +485,8 @@ class IsotrackTreesAnalysis {
         TH1F* histNNH[8];
         TH1F* histNNEMraw[8];
         TH1F* histNNHraw[8];
+        
+        // Energy radius optimization module
         TEfficiency* energy_radius_purity;
         TEfficiency* energy_radius_efficiency;
         TH1F* energy_dist_mip;

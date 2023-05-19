@@ -46,15 +46,15 @@ void IsotrackTreesAnalysis::Loop(){
     initVertexModule();
     //initTrackResolutionModule();
     initTrackRatesModule();
-    //initEOverPModule();
+    initEOverPModule();
     initChecksModule();
     //if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
 
-    //initBackgroundEstimationModule();
-    //initBackgroundCheckModule();
+    initBackgroundEstimationModule();
+    initBackgroundCheckModule();
 
     //initZeroShowerEnergyModule();
-    initShowerSizeModule();
+    //initShowerSizeModule();
 
     ///////////////////////////////////////////////////
 
@@ -167,6 +167,7 @@ void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClu
         cutFlow->Fill(6);
         showerSizeModule(id, cemcClusters, ihcalClusters, ohcalClusters);
         zeroShowerEnergyModule(id, totalCemcEnergy, totalIhcalEnergy, totalOhcalEnergy);
+        energyRadiusOptimizationModule(id, cemcClusters);
 
     }
 }
