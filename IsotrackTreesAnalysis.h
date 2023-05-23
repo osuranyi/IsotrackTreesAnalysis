@@ -96,6 +96,10 @@ class IsotrackTreesAnalysis {
         Int_t           m_tr_charge[2000];   //[m_trkmult]
         Float_t         m_tr_chisq[2000];   //[m_trkmult]
         Int_t           m_tr_ndf[2000];   //[m_trkmult]
+        Float_t         m_tr_quality[2000];   //[m_trkmult]
+        Int_t           m_tr_nmaps[2000];   //[m_trkmult]
+        Int_t           m_tr_nintt[2000];   //[m_trkmult]
+        Int_t           m_tr_ntpc[2000];   //[m_trkmult]
         Float_t         m_tr_dca_xy[2000];   //[m_trkmult]
         Float_t         m_tr_dca_xy_error[2000];   //[m_trkmult]
         Float_t         m_tr_dca_z[2000];   //[m_trkmult]
@@ -115,6 +119,12 @@ class IsotrackTreesAnalysis {
         Float_t         m_tr_ihcal_phi[2000];   //[m_trkmult]
         Float_t         m_tr_ohcal_eta[2000];   //[m_trkmult]
         Float_t         m_tr_ohcal_phi[2000];   //[m_trkmult]
+        Float_t         m_tr_outer_cemc_eta[2000];   //[m_trkmult]
+        Float_t         m_tr_outer_cemc_phi[2000];   //[m_trkmult]
+        Float_t         m_tr_outer_ihcal_eta[2000];   //[m_trkmult]
+        Float_t         m_tr_outer_ihcal_phi[2000];   //[m_trkmult]
+        Float_t         m_tr_outer_ohcal_eta[2000];   //[m_trkmult]
+        Float_t         m_tr_outer_ohcal_phi[2000];   //[m_trkmult]
         Int_t           m_tr_truth_pid[2000];   //[m_trkmult]
         Int_t           m_tr_truth_is_primary[2000];   //[m_trkmult]
         Float_t         m_tr_truth_e[2000];   //[m_trkmult]
@@ -132,6 +142,10 @@ class IsotrackTreesAnalysis {
         TBranch        *b_m_tr_charge;   //!
         TBranch        *b_m_tr_chisq;   //!
         TBranch        *b_m_tr_ndf;   //!
+        TBranch        *b_m_tr_quality;   //!
+        TBranch        *b_m_tr_nmaps;   //!
+        TBranch        *b_m_tr_nintt;   //!
+        TBranch        *b_m_tr_ntpc;   //!
         TBranch        *b_m_tr_dca_xy;   //!
         TBranch        *b_m_tr_dca_xy_error;   //!
         TBranch        *b_m_tr_dca_z;   //!
@@ -151,6 +165,12 @@ class IsotrackTreesAnalysis {
         TBranch        *b_m_tr_ihcal_phi;   //!
         TBranch        *b_m_tr_ohcal_eta;   //!
         TBranch        *b_m_tr_ohcal_phi;   //!
+        TBranch        *b_m_tr_outer_cemc_eta;   //!
+        TBranch        *b_m_tr_outer_cemc_phi;   //!
+        TBranch        *b_m_tr_outer_ihcal_eta;   //!
+        TBranch        *b_m_tr_outer_ihcal_phi;   //!
+        TBranch        *b_m_tr_outer_ohcal_eta;   //!
+        TBranch        *b_m_tr_outer_ohcal_phi;   //!
         TBranch        *b_m_tr_truth_pid;   //!
         TBranch        *b_m_tr_truth_is_primary;   //!
         TBranch        *b_m_tr_truth_e;   //!
@@ -342,9 +362,11 @@ class IsotrackTreesAnalysis {
 
         // Declaration of leaf types
         Float_t         centrality;
+        Float_t         truth_centrality;
 
         // List of branches
         TBranch        *b_centrality;   //!
+        TBranch        *b_truth_centrality;
 
 
         /////////////////////////////////////////////
@@ -746,6 +768,10 @@ void IsotrackTreesAnalysis::Init()
    fChainTracks->SetBranchAddress("m_tr_charge", m_tr_charge, &b_m_tr_charge);
    fChainTracks->SetBranchAddress("m_tr_chisq", m_tr_chisq, &b_m_tr_chisq);
    fChainTracks->SetBranchAddress("m_tr_ndf", m_tr_ndf, &b_m_tr_ndf);
+   fChainTracks->SetBranchAddress("m_tr_quality", m_tr_quality, &b_m_tr_quality);
+   fChainTracks->SetBranchAddress("m_tr_nmaps", m_tr_nmaps, &b_m_tr_nmaps);
+   fChainTracks->SetBranchAddress("m_tr_ninitt", m_tr_nintt, &b_m_tr_nintt);
+   fChainTracks->SetBranchAddress("m_tr_ntpc", m_tr_ntpc, &b_m_tr_ntpc);
    fChainTracks->SetBranchAddress("m_tr_dca_xy", m_tr_dca_xy, &b_m_tr_dca_xy);
    fChainTracks->SetBranchAddress("m_tr_dca_xy_error", m_tr_dca_xy_error, &b_m_tr_dca_xy_error);
    fChainTracks->SetBranchAddress("m_tr_dca_z", m_tr_dca_z, &b_m_tr_dca_z);
@@ -765,6 +791,12 @@ void IsotrackTreesAnalysis::Init()
    fChainTracks->SetBranchAddress("m_tr_ihcal_phi", m_tr_ihcal_phi, &b_m_tr_ihcal_phi);
    fChainTracks->SetBranchAddress("m_tr_ohcal_eta", m_tr_ohcal_eta, &b_m_tr_ohcal_eta);
    fChainTracks->SetBranchAddress("m_tr_ohcal_phi", m_tr_ohcal_phi, &b_m_tr_ohcal_phi);
+   fChainTracks->SetBranchAddress("m_tr_outer_cemc_eta", m_tr_outer_cemc_eta, &b_m_tr_outer_cemc_eta);
+   fChainTracks->SetBranchAddress("m_tr_outer_cemc_phi", m_tr_outer_cemc_phi, &b_m_tr_outer_cemc_phi);
+   fChainTracks->SetBranchAddress("m_tr_outer_ihcal_eta", m_tr_outer_ihcal_eta, &b_m_tr_outer_ihcal_eta);
+   fChainTracks->SetBranchAddress("m_tr_outer_ihcal_phi", m_tr_outer_ihcal_phi, &b_m_tr_outer_ihcal_phi);
+   fChainTracks->SetBranchAddress("m_tr_outer_ohcal_eta", m_tr_outer_ohcal_eta, &b_m_tr_outer_ohcal_eta);
+   fChainTracks->SetBranchAddress("m_tr_outer_ohcal_phi", m_tr_outer_ohcal_phi, &b_m_tr_outer_ohcal_phi);
    fChainTracks->SetBranchAddress("m_tr_truth_pid", m_tr_truth_pid, &b_m_tr_truth_pid);
    fChainTracks->SetBranchAddress("m_tr_truth_is_primary", m_tr_truth_is_primary, &b_m_tr_truth_is_primary);
    fChainTracks->SetBranchAddress("m_tr_truth_e", m_tr_truth_e, &b_m_tr_truth_e);
@@ -847,9 +879,9 @@ void IsotrackTreesAnalysis::Init()
    fChainG4->SetBranchAddress("m_g4_parent_id", m_g4_parent_id, &b_m_g4_parent_id);
 
    fChainCentrality->SetBranchAddress("centrality", &centrality, &b_centrality);
-
+   fChainCentrality->SetBranchAddress("truth_centrality", &truth_centrality, &b_truth_centrality);
    if (USE_PARTICLE_GUN) {
-        fChainAddTruth->SetBranchAddress("n_child", &n_child, &b_n_child);
+       fChainAddTruth->SetBranchAddress("n_child", &n_child, &b_n_child);
        fChainAddTruth->SetBranchAddress("child_pid", child_pid, &b_child_pid);
        fChainAddTruth->SetBranchAddress("child_parent_id", child_parent_id, &b_child_parent_id);
        fChainAddTruth->SetBranchAddress("child_vertex_id", child_vertex_id, &b_child_vertex_id);

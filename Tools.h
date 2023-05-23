@@ -31,7 +31,7 @@ MatchedClusterContainer IsotrackTreesAnalysis::getMatchedClusters(int id, caloTy
             for(int i = 0; i < m_clsmult_ihcal; i++){ 
                 if (m_cl_ihcal_e[i] < 0.015) continue;
                 if(m_tr_ihcal_eta[id] > -998){
-                    track.SetPtEtaPhi(1.0, 0.5*(m_tr_ihcal_eta[id]+m_tr_outer_ihcal+eta[id]), 0.5*(m_tr_ihcal_phi[id]+m_tr_outer_ihcal_phi[id])); // for the track we only need the direction!
+                    track.SetPtEtaPhi(1.0, 0.5*(m_tr_ihcal_eta[id]+m_tr_outer_ihcal_eta[id]), 0.5*(m_tr_ihcal_phi[id]+m_tr_outer_ihcal_phi[id])); // for the track we only need the direction!
                     cluster.SetPtEtaPhi(m_cl_ihcal_e[i]/cosh(m_cl_ihcal_eta[i]), m_cl_ihcal_eta[i], m_cl_ihcal_phi[i]);
                     float dR = track.DeltaR(cluster);
                     if(dR < dRThreshold){
@@ -89,7 +89,7 @@ MatchedClusterContainer IsotrackTreesAnalysis::getMatchedTowers(int id, caloType
             for(int i = 0; i < m_twrmult_ihcal; i++){ 
                 if (m_twr_ihcal_e[i] < 0.006) continue;
                 if(m_tr_ihcal_eta[id] > -998){
-                    track.SetPtEtaPhi(1.0, 0.5*(m_tr_ihcal_eta[id]+m_tr_outer_ihcal+eta[id]), 0.5*(m_tr_ihcal_phi[id]+m_tr_outer_ihcal_phi[id])); // for the track we only need the direction!
+                    track.SetPtEtaPhi(1.0, 0.5*(m_tr_ihcal_eta[id]+m_tr_outer_ihcal_eta[id]), 0.5*(m_tr_ihcal_phi[id]+m_tr_outer_ihcal_phi[id])); // for the track we only need the direction!
                     cluster.SetPtEtaPhi(m_twr_ihcal_e[i]/cosh(m_twr_ihcal_eta[i]), m_twr_ihcal_eta[i], m_twr_ihcal_phi[i]);
                     float dR = track.DeltaR(cluster);
                     if(dR < dRThreshold){
@@ -146,7 +146,7 @@ MatchedClusterContainer IsotrackTreesAnalysis::getMatchedSimTowers(int id, caloT
             // Check if IHCal is reached
             for(int i = 0; i < m_simtwrmult_ihcal; i++){ 
                 if(m_tr_ihcal_eta[id] > -998){
-                    track.SetPtEtaPhi(1.0, 0.5*(m_tr_ihcal_eta[id]+m_tr_outer_ihcal+eta[id]), 0.5*(m_tr_ihcal_phi[id]+m_tr_outer_ihcal_phi[id])); // for the track we only need the direction!
+                    track.SetPtEtaPhi(1.0, 0.5*(m_tr_ihcal_eta[id]+m_tr_outer_ihcal_eta[id]), 0.5*(m_tr_ihcal_phi[id]+m_tr_outer_ihcal_phi[id])); // for the track we only need the direction!
                     cluster.SetPtEtaPhi(m_simtwr_ihcal_e[i]/(ihcal_sf*cosh(m_simtwr_ihcal_eta[i])), m_simtwr_ihcal_eta[i], m_simtwr_ihcal_phi[i]);
                     float dR = track.DeltaR(cluster);
                     if(dR < dRThreshold){
