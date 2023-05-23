@@ -770,7 +770,7 @@ void IsotrackTreesAnalysis::Init()
    fChainTracks->SetBranchAddress("m_tr_ndf", m_tr_ndf, &b_m_tr_ndf);
    fChainTracks->SetBranchAddress("m_tr_quality", m_tr_quality, &b_m_tr_quality);
    fChainTracks->SetBranchAddress("m_tr_nmaps", m_tr_nmaps, &b_m_tr_nmaps);
-   fChainTracks->SetBranchAddress("m_tr_ninitt", m_tr_nintt, &b_m_tr_nintt);
+   fChainTracks->SetBranchAddress("m_tr_nintt", m_tr_nintt, &b_m_tr_nintt);
    fChainTracks->SetBranchAddress("m_tr_ntpc", m_tr_ntpc, &b_m_tr_ntpc);
    fChainTracks->SetBranchAddress("m_tr_dca_xy", m_tr_dca_xy, &b_m_tr_dca_xy);
    fChainTracks->SetBranchAddress("m_tr_dca_xy_error", m_tr_dca_xy_error, &b_m_tr_dca_xy_error);
