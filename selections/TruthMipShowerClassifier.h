@@ -35,11 +35,17 @@ int IsotrackTreesAnalysis::truthMipShowerClassifier(int id) {
     //std::cout << "vertex set:" << std::endl;
     v_radius = ohcal_outer + 1;
     for (std::set<int>::iterator it = vertex.begin(); it != vertex.end(); it++) {
-        
+        std::set<int> children;
         child = 0;
         for (int i = 0 ; i < n_child; i++) {
-            if (child_vertex_id[i] == *it && abs(child_pid[i]) != 11 && child_pid[i] != 22) child++;
+            if (child_vertex_id[i] == *it && abs(child_pid[i]) != 11 && child_pid[i] != 22) {
+                child++;
+                children.insert(child_pid[i]);
+            }
         }
+        if (children.find(13) != children.end() && children.find(-14) != children.end() && children.size() == 2) return 7;
+        if (children.find(-13) != children.end() && children.find(14) != children.end() && children.size() == 2) return 7; 
+        
         if (child > 1) {
             // now find the location of the shower vertex
             for (int v = 0; v < n_vertex; v++) {
