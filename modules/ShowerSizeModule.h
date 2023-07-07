@@ -245,7 +245,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
     // Fill histograms //
     /////////////////////
 
-    if(totalCemcEnergy > 0.16){
+    //if(totalCemcEnergy > 0.16){
         cemcDiffEta[showerType]->Fill(m_tr_cemc_eta[id] - cemc_eta_mean);
         cemcDiffPhi[showerType]->Fill(0.5*(m_tr_cemc_phi[id]+m_tr_ihcal_phi[id]) - cemc_phi_mean);
         cemcSigmaEta[showerType]->Fill(sqrt(cemc_eta_sigma2));
@@ -255,7 +255,7 @@ void IsotrackTreesAnalysis::showerSizeModule(int id, MatchedClusterContainer cem
         cemcDiffPhiVsE[showerType]->Fill(m_tr_cemc_phi[id] - cemc_phi_mean, totalCemcEnergy);
         cemcSigmaEtaVsE[showerType]->Fill(sqrt(cemc_eta_sigma2), totalCemcEnergy);
         cemcSigmaPhiVsE[showerType]->Fill(sqrt(cemc_phi_sigma2), totalCemcEnergy);
-    }
+    //}
 
     //if(totalIhcalEnergy > 0.06){
         ihcalDiffEta[showerType]->Fill(m_tr_ihcal_eta[id] - ihcal_eta_mean);
