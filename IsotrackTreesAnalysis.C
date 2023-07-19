@@ -28,6 +28,7 @@
 #include "modules/BackgroundCheckModule.h"
 #include "modules/EnergyRadiusOptimizationModule.h"
 #include "modules/ShowerSizeModule.h"
+#include "modules/EmptyRegionModule.h"
 
 #include "postprocess/BackgroundDeconvolution.h"
 
@@ -44,13 +45,14 @@ void IsotrackTreesAnalysis::Loop(){
 
     initTrackQualityModule();
     initVertexModule();
+    initEmptyRegionModule();
     //initTrackResolutionModule();
     initTrackRatesModule();
-    initEOverPModule();
+    //initEOverPModule();
     initChecksModule();
-    //if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
+    if (USE_PARTICLE_GUN) initEnergyRadiusOptimizationModule();
 
-    initBackgroundEstimationModule();
+    //initBackgroundEstimationModule();
     initBackgroundCheckModule();
 
     //initZeroShowerEnergyModule();
@@ -60,12 +62,13 @@ void IsotrackTreesAnalysis::Loop(){
 
     cutFlow = new TH1F("cut flow",";Selection;Selected events",7,0,7);
 
-    for(Long64_t jentry=0;jentry<nentries;jentry++) {
+    //for(Long64_t jentry=0;jentry<nentries;jentry++) {
+    for (Long64_t jentry = 0; jentry < 50000; jentry++) {
         LoadTree(jentry);
         GetEntry(jentry);
-        processEvent();
+        processEvent(); 
     
-        if(jentry % 1000 == 0)
+        if(jentry % 100 == 0)
             std::cout << jentry << "/" << nentries << " have been processed" << std::endl;
     }
 
@@ -84,6 +87,8 @@ void IsotrackTreesAnalysis::processEvent(){
     cutFlow->Fill(0);
     if (basicEventSelection()) {
         cutFlow->Fill(1);
+        emptyRegionModule();
+        
         for (int i = 0; i < m_trkmult; i++){
             if(trackKinematicSelection(i) && trackIsolationSelection(i)){
                 cutFlow->Fill(2);
@@ -120,7 +125,7 @@ void IsotrackTreesAnalysis::processEvent(){
 
                     // Process tracks which MIPs through the EMCal and starts to shower later
 
-                    if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))){
+                    //if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))){
                         //FIXME if(mipShowerClassifier(i,cemcClusters,ihcalClusters,ohcalClusters) >= SHOWER_START){
                         cutFlow->Fill(4);
                         if(!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1)){ // FIXME
@@ -128,7 +133,7 @@ void IsotrackTreesAnalysis::processEvent(){
                             processTrack(i,cemcClusters,ihcalClusters,ohcalClusters);
                         }
                         //}
-                    }
+                    //}
                 }
             }
         }
@@ -156,13 +161,13 @@ void IsotrackTreesAnalysis::processTrack(int id, MatchedClusterContainer cemcClu
 
     //trackResolutionModule(id, totalEnergy);
     trackRatesModule(id);
-    eOverPModule(id, totalEnergy, totalHcalEnergy);
-    checksModule(cemcClusters, ihcalClusters, ohcalClusters);
+    //eOverPModule(id, totalEnergy, totalHcalEnergy);
+    //checksModule(cemcClusters, ihcalClusters, ohcalClusters);
 
-    if(SHOWER_START == cemc){
-      backgroundEstimationModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
-      backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
-    }
+    //if(SHOWER_START == cemc){
+      //backgroundEstimationModule(id, totalEnergy, cemcClusters, ihcalClusters, ohcalClusters);
+    backgroundCheckModule(id, cemcClusters, ihcalClusters, ohcalClusters);
+    //}
     
     if(USE_TOWER_INFO && USE_PARTICLE_GUN){
         cutFlow->Fill(6);

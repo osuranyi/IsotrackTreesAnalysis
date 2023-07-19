@@ -20,6 +20,8 @@
 #include <iostream>
 #include <fstream>
 #include <string> 
+#include <algorithm>
+#include <random>
 
 // Header file for the classes stored in the TTree if any.
 
@@ -436,9 +438,18 @@ class IsotrackTreesAnalysis {
         TH2F* histEoverP_EMCalMIP;
         // TrackRatesModule
         TH1F* histTrackTotal;
-        TH1F* histTrackRate[8];
+        TH1F* histTrackRate[4];
         // ChecksModule
         TH1F* histTowerNumber[3];
+
+        // EmptyRedgionModule
+        TH1F* histEmptyRegionNumber;
+        TH1F* histTruthEmptyRegionNumber;
+        TH2F* histEmptyCenter[4];
+        TH1F* histEmptyEnergy[4];
+        TH1F* histEmptyNumber[4];
+        TH2F* histEmptyEvent;
+        TH2F* histAcceptanceIndex;
 
         TH2F* histEoverPRaw_NoEtaNoCent;
         TH2F* histEoverPBkg_NoEtaNoCent;
@@ -507,6 +518,9 @@ class IsotrackTreesAnalysis {
         TH1F* histNNH[8];
         TH1F* histNNEMraw[8];
         TH1F* histNNHraw[8];
+
+        TH1F* histNeutralEnergy[4];
+        TH1F* histNeutralNumber[4];
         
         // Energy radius optimization module
         TEfficiency* energy_radius_purity;
@@ -638,6 +652,9 @@ class IsotrackTreesAnalysis {
 
         void initShowerSizeModule();
         void showerSizeModule(int id, MatchedClusterContainer cemcClusters, MatchedClusterContainer ihcalClusters, MatchedClusterContainer ohcalClusters);
+
+        void initEmptyRegionModule();
+        void emptyRegionModule();
 
         // Postprocessing
         //void initFFT();

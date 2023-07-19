@@ -14,14 +14,14 @@ bool IsotrackTreesAnalysis::trackIsolationSelection(int id){
     TVector3 v1, v2;
 
     // FIXME currently using quick fix for track projection, this should be fixed when appropritate projections are available
-    v1.SetPtEtaPhi(1.0, m_tr_cemc_eta[id], 0.5*(m_tr_cemc_phi[id]+m_tr_ihcal_phi[id]));
+    v1.SetPtEtaPhi(m_tr_pt[id], m_tr_cemc_eta[id], 0.5*(m_tr_cemc_phi[id]+m_tr_outer_cemc_phi[id]));
 
     for(int j = 0; j < m_trkmult; j++){
         if(id == j){ continue; }
 
         // FIXME currently using quick fix for track projection, this should be fixed when appropritate projections are available
 
-        v2.SetPtEtaPhi(1.0, m_tr_cemc_eta[j], 0.5*(m_tr_cemc_phi[j]+m_tr_ihcal_phi[j]));
+        v2.SetPtEtaPhi(m_tr_pt[j], m_tr_cemc_eta[j], 0.5*(m_tr_cemc_phi[j]+m_tr_outer_cemc_phi[j]));
 
         if(v2.Pt() > MATCHED_PT_CUT && v1.DeltaR(v2) < MATCHED_DR_CUT){
             return false;
