@@ -128,9 +128,10 @@ void IsotrackTreesAnalysis::processEvent(){
                     //if (!USE_TRUTH_INFO || (USE_TRUTH_INFO && truthIsolatedTrackSelection(i))){
                         //FIXME if(mipShowerClassifier(i,cemcClusters,ihcalClusters,ohcalClusters) >= SHOWER_START){
                         cutFlow->Fill(4);
-                        //if(!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1)) // FIXME
-                        cutFlow->Fill(5);
-                        processTrack(i,cemcClusters,ihcalClusters,ohcalClusters);
+                        if(!USE_PARTICLE_GUN || (USE_PARTICLE_GUN && m_tr_truth_track_id[i] == 1)){ // FIXME
+                            cutFlow->Fill(5);
+                            processTrack(i,cemcClusters,ihcalClusters,ohcalClusters);
+                        }
                         //}
                     //}
                 }
