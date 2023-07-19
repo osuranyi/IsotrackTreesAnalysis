@@ -10,7 +10,7 @@ bool IsotrackTreesAnalysis::truthIsolatedTrackSelection(int id) {
 
     // Truth isolation condition
     TVector3 v1, v2;
-    v1.SetPtEtaPhi(m_tr_pt[id], m_tr_cemc_eta[id], m_tr_cemc_phi[id]);
+    v1.SetPtEtaPhi(m_tr_pt[id], m_tr_cemc_eta[id], 0.5*(m_tr_cemc_phi[id] + m_tr_outer_cemc_phi[id]));
     for (int j = 0; j < m_g4; j++) {
         if (neutral_pid.find(m_g4_pid[j]) == neutral_pid.end() || m_g4_pt[j] < MATCHED_NEUTRAL_TRUTH_PT_CUT || fabs(m_g4_eta[j]) > MATCHED_NEUTRAL_TRUTH_ETA_CUT) { continue; }
 

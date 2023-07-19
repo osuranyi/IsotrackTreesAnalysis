@@ -17,7 +17,7 @@ void IsotrackTreesAnalysis::initEOverPModule() {
   
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 4; j++) {
-      histEoverPRaw[4*i+j+1] = new TH2F(TString::Format("ep_raw_hcal_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,200,0,10);
+      histEoverPRaw[4*i+j+1] = new TH2F(TString::Format("ep_raw_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,200,0,10);
       histEHcalOverPRaw[4*i+j+1]= new TH2F(TString::Format("ep_raw_hcal_%s_eta_centrality_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,200,0,10);
     }
   }

@@ -25,6 +25,11 @@ void IsotrackTreesAnalysis::initBackgroundCheckModule() {
   // so we will need both the e/p_bkg distribution and the e/p_neutral_neighbors distributions on their own 
   // real equation is e/p_bkg_truth - e/p_neutral_neighbors_truth = e/p_bkg_track - e/p_neutral_neighbors_track
   
+  for (int i = 0; i < 4; i++) {
+    histNeutralEnergy[i] = new TH1F(TString::Format("neutral_energy_%d",centrality_list[i]),"",5000,0,100);
+    histNeutralNumber[i] = new TH1F(TString::Format("neutral_number_%d",centrality_list[i]),"",500,0,500);
+  }
+  /*
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 4; j++) {
 
@@ -62,7 +67,7 @@ void IsotrackTreesAnalysis::initBackgroundCheckModule() {
       histBkgEoverPNH[4*i+j] = new TH2F(TString::Format("epBkgNH_%s_%d",eta_list[i].c_str(),centrality_list[j]),"",20,0,20,2000,0,20);
       
     }
-  }
+  }*/
   
 }
 
@@ -71,7 +76,34 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
   const std::set<int> neutral_pid = {-3322,-3212,-3122,-2112,-421,-14,-12,12,14,22,111,130,310,421,
                     2112,3122,3212,3322};
 
-	// calculate energy of matched clusters as a function of delta_R
+  
+  TVector3 v1, v2;
+  v1.SetPtEtaPhi(m_tr_pt[id], m_tr_cemc_eta[id], 0.5*(m_tr_cemc_phi[id]+m_tr_outer_cemc_phi[id]));
+  float centrality_array[] = {20,40,60,80,100};
+  float e_nn = 0;
+  int n_nn = 0;
+  for (int k = 0; k < m_g4; k++) {
+    if (neutral_pid.find(m_g4_pid[k]) == neutral_pid.end() || m_g4_pt[k] < MATCHED_NEUTRAL_TRUTH_PT_CUT || fabs(m_g4_eta[k]) > MATCHED_NEUTRAL_TRUTH_ETA_CUT) { continue; }
+            
+    v2.SetPtEtaPhi(m_g4_pt[k], m_g4_eta[k], m_g4_phi[k]);
+    if (v1.DeltaR(v2) < MATCHED_DR_CUT) {
+      if (m_g4_pid[k] == 111) { 
+        continue;
+      } else {
+        n_nn++;
+        e_nn += m_g4_e[k];
+      }
+    }
+  }
+
+  for (int j = 1; j < 5; j++) {
+    if (centrality > centrality_array[j-1] && centrality < centrality_array[j]) {
+      histNeutralEnergy[j-1]->Fill(e_nn);
+      histNeutralNumber[j-1]->Fill(n_nn);
+    }
+  }
+  /*
+  // calculate energy of matched clusters as a function of delta_R
   float R1CemcEnergy = cemcClusters.getTotalEnergy(0.1);
   float R1IhcalEnergy = ihcalClusters.getTotalEnergy(0.1);
     
@@ -81,7 +113,7 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
 
   float centrality_array[] = {20,40,60,80,100};
   
-  if (R1CemcEnergy < CEMC_MIP_ENERGY && R1IhcalEnergy < IHCAL_MIP_ENERGY && R2OhcalEnergy/m_tr_p[id] > 0.4) {
+  //if (R1CemcEnergy < CEMC_MIP_ENERGY && R1IhcalEnergy < IHCAL_MIP_ENERGY && R2OhcalEnergy/m_tr_p[id] > 0.4) {
 
     float R1Energy = R1CemcEnergy + R1IhcalEnergy;
     float R2Energy = R2CemcEnergy + R2IhcalEnergy;
@@ -105,14 +137,14 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
     bool NH = false;
 
     TVector3 v1, v2;
-    v1.SetPtEtaPhi(m_tr_pt[id], m_tr_cemc_eta[id], 0.5*(m_tr_cemc_phi[id]+m_tr_ihcal_phi[id]));
+    v1.SetPtEtaPhi(m_tr_pt[id], m_tr_cemc_eta[id], 0.5*(m_tr_cemc_phi[id]+m_tr_outer_cemc_phi[id]));
     for (int j = 0; j < m_g4; j++) {
       if (neutral_pid.find(m_g4_pid[j]) == neutral_pid.end() || m_g4_pt[j] < MATCHED_NEUTRAL_TRUTH_PT_CUT || fabs(m_g4_eta[j]) > MATCHED_NEUTRAL_TRUTH_ETA_CUT) { continue; }
 
       v2.SetPtEtaPhi(m_g4_pt[j], m_g4_eta[j], m_g4_phi[j]);
       dr = double(v1.DeltaR(v2));
 
-      if (dr < 0.2) {
+      if (dr < 0.4) {
 
         n_nn++;
         // neutral em particles
@@ -143,10 +175,8 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
         if (!USE_CENTRALITY || (centrality > centrality_array[j-1] && centrality < centrality_array[j])) {
           histENN[j-1]->Fill(m_tr_p[id], ep_nn);
           histENNtest[j-1]->Fill(m_tr_p[id], ep_nn_test);
-          histCemcE[j-1]->Fill(m_tr_p[id], R2CemcEnergy - R1CemcEnergy);
-          histIhcalE[j-1]->Fill(m_tr_p[id], R2IhcalEnergy - R1IhcalEnergy);
-          histBkgE[j-1]->Fill(m_tr_p[id], R2Energy - R1Energy);
-          histBkgEoverPNN[j-1]->Fill(m_tr_p[id], (R2Energy - R1Energy)/m_tr_p[id]);
+          histBkgE[j-1]->Fill(m_tr_p[id], (4/3)*(R2Energy - R1Energy));
+          histBkgEoverPNN[j-1]->Fill(m_tr_p[id], (4/3)*(R2Energy - R1Energy)/m_tr_p[id]);
           histNNN[j-1]->Fill(n_nn);
           histNNEMraw[j-1]->Fill(n_nem);
           histNNHraw[j-1]->Fill(n_nh);
@@ -156,7 +186,7 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
             histBkgENEM[j-1]->Fill(m_tr_p[id], R2Energy - R1Energy);
             histENEM[j-1]->Fill(m_tr_p[id], ep_nem);
             histENEMtest[j-1]->Fill(m_tr_p[id], ep_nem_test);
-            histBkgEoverPNEM[j-1]->Fill(m_tr_p[id], (R2Energy - R1Energy)/m_tr_p[id]);
+            histBkgEoverPNEM[j-1]->Fill(m_tr_p[id], (4/3)*(R2Energy - R1Energy)/m_tr_p[id]);
             histNNEM[j-1]->Fill(n_nem);
           }
           if (!NEM && NH) {
@@ -165,7 +195,7 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
             histBkgENH[j-1]->Fill(m_tr_p[id], R2Energy - R1Energy);
             histENH[j-1]->Fill(m_tr_p[id], ep_nh);
             histENHtest[j-1]->Fill(m_tr_p[id], ep_nh_test);
-            histBkgEoverPNH[j-1]->Fill(m_tr_p[id], (R2Energy - R1Energy)/m_tr_p[id]);
+            histBkgEoverPNH[j-1]->Fill(m_tr_p[id], (4/3)*(R2Energy - R1Energy)/m_tr_p[id]);
             histNNH[j-1]->Fill(n_nh);
           }
         }
@@ -175,10 +205,8 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
         if (!USE_CENTRALITY || (centrality > centrality_array[j-1] && centrality < centrality_array[j])) {
           histENN[3+j]->Fill(m_tr_p[id], ep_nn);
           histENNtest[3+j]->Fill(m_tr_p[id], ep_nn_test);
-          histCemcE[3+j]->Fill(m_tr_p[id], R2CemcEnergy - R1CemcEnergy);
-          histIhcalE[3+j]->Fill(m_tr_p[id], R2IhcalEnergy - R1IhcalEnergy);
-          histBkgE[3+j]->Fill(m_tr_p[id], R2Energy - R1Energy);
-          histBkgEoverPNN[3+j]->Fill(m_tr_p[id], (R2Energy - R1Energy)/m_tr_p[id]);
+          histBkgE[3+j]->Fill(m_tr_p[id], (4/3)*(R2Energy - R1Energy));
+          histBkgEoverPNN[3+j]->Fill(m_tr_p[id], (4/3)*(R2Energy - R1Energy)/m_tr_p[id]);
           histNNN[3+j]->Fill(n_nn);
           histNNEMraw[3+j]->Fill(n_nem);
           histNNHraw[3+j]->Fill(n_nh);
@@ -188,7 +216,7 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
             histBkgENEM[3+j]->Fill(m_tr_p[id], R2Energy - R1Energy);
             histENEM[3+j]->Fill(m_tr_p[id], ep_nem);
             histENEMtest[3+j]->Fill(m_tr_p[id], ep_nem_test);
-            histBkgEoverPNEM[3+j]->Fill(m_tr_p[id], (R2Energy - R1Energy)/m_tr_p[id]);
+            histBkgEoverPNEM[3+j]->Fill(m_tr_p[id], (4/3)*(R2Energy - R1Energy)/m_tr_p[id]);
             histNNEM[3+j]->Fill(n_nem);
           }
           if (!NEM && NH) {
@@ -197,7 +225,7 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
             histBkgENH[3+j]->Fill(m_tr_p[id], R2Energy - R1Energy);
             histENH[3+j]->Fill(m_tr_p[id], ep_nh);
             histENHtest[3+j]->Fill(m_tr_p[id], ep_nh_test);
-            histBkgEoverPNH[3+j]->Fill(m_tr_p[id], (R2Energy - R1Energy)/m_tr_p[id]);
+            histBkgEoverPNH[3+j]->Fill(m_tr_p[id], (4/3)*(R2Energy - R1Energy)/m_tr_p[id]);
             histNNH[3+j]->Fill(n_nh);
           }
         }
@@ -241,6 +269,6 @@ void IsotrackTreesAnalysis::backgroundCheckModule(int id, MatchedClusterContaine
           }
         }
       }
-    }
-  }
+    }*/
+  //}
 }
